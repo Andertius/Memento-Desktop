@@ -1,0 +1,75 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:vm="clr-namespace:Memento.Avalonia.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Memento.Avalonia.Views.MainView"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/icon.png"
+        Title="Memento">
+
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <Grid Background="{DynamicResource PrimaryBackground}" ColumnDefinitions="300, *">
+        <Border Padding="20" Background="{DynamicResource PrimaryBackgroundGradient}">
+            <Grid RowDefinitions="* Auto">
+                <StackPanel Grid.Row="0" Spacing="10">
+                    <Image Source="{SvgImage /Assets/logo.svg}" Width="220" />
+
+                    <Button Content="Home"
+                            Classes.active="{Binding HomePageIsActive}"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding GoToPageCommand}"
+                            CommandParameter="{Binding HomePageViewModel}"/>
+
+                    <Button Content="Learn"
+                            Classes.active="{Binding LearnIsActive}"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding GoToPageCommand}"
+                            CommandParameter="{Binding LearnViewModel}"/>
+
+                    <Button Content="Manage Cards"
+                            Classes.active="{Binding ManageCardsIsActive}"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding GoToPageCommand}"
+                            CommandParameter="{Binding ManageCardsViewModel}"/>
+
+                    <Button Content="Manage Categories"
+                            Classes.active="{Binding ManageCategoriesIsActive}"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding GoToPageCommand}"
+                            CommandParameter="{Binding ManageCategoriesViewModel}"/>
+
+                    <Button Content="Manage Tags"
+                            Classes.active="{Binding ManageTagsIsActive}"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding GoToPageCommand}"
+                            CommandParameter="{Binding ManageTagsViewModel}"/>
+                </StackPanel>
+
+                <Grid Grid.Row="1" ColumnDefinitions="* Auto Auto">
+                    <TextBlock Grid.Column="0" Text="{Binding Username}" FontSize="20" />
+
+                    <Button Grid.Column="1"
+                            Classes="transparent"
+                            Classes.transparent-active="{Binding SettingsIsActive}"
+                            Command="{Binding GoToPageCommand}"
+                            CommandParameter="{Binding SettingsViewModel}">
+                        <materialIcons:MaterialIcon Kind="Settings" />
+                    </Button>
+
+                    <Button Grid.Column="2" Classes="transparent">
+                        <materialIcons:MaterialIcon Kind="Logout" />
+                    </Button>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" />
+        <!-- <ContentControl Grid.Column="1"><views:ManageTagsView/></ContentControl> -->
+    </Grid>
+</Window>
