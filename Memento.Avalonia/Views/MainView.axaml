@@ -5,6 +5,7 @@
         xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         xmlns:vm="clr-namespace:Memento.Avalonia.ViewModels"
         xmlns:data="clr-namespace:Memento.Avalonia.Data"
+        xmlns:converters="clr-namespace:Memento.Avalonia.Converters"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Memento.Avalonia.Views.MainView"
         x:DataType="vm:MainViewModel"
@@ -15,6 +16,10 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
+    <Window.Resources>
+        <converters:ActivePageConverter x:Key="ActivePageConverter"/>
+    </Window.Resources>
+
     <Grid Background="{DynamicResource PrimaryBackground}" ColumnDefinitions="300, *">
         <Border Padding="20" Background="{DynamicResource PrimaryBackgroundGradient}">
             <Grid RowDefinitions="* Auto">
@@ -22,31 +27,31 @@
                     <Image Source="{SvgImage /Assets/logo.svg}" Width="220" />
 
                     <Button Content="Home"
-                            Classes.active="{Binding HomePageIsActive}"
+                            Classes.active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.HomePage}}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
                             CommandParameter="{x:Static data:ApplicationPageNames.HomePage}"/>
 
                     <Button Content="Learn"
-                            Classes.active="{Binding LearnIsActive}"
+                            Classes.active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.Learn}}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
                             CommandParameter="{x:Static data:ApplicationPageNames.Learn}"/>
 
                     <Button Content="Manage Cards"
-                            Classes.active="{Binding ManageCardsIsActive}"
+                            Classes.active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.ManageCards}}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
                             CommandParameter="{x:Static data:ApplicationPageNames.ManageCards}"/>
 
                     <Button Content="Manage Categories"
-                            Classes.active="{Binding ManageCategoriesIsActive}"
+                            Classes.active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.ManageCategories}}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
                             CommandParameter="{x:Static data:ApplicationPageNames.ManageCategories}"/>
 
                     <Button Content="Manage Tags"
-                            Classes.active="{Binding ManageTagsIsActive}"
+                            Classes.active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.ManageTags}}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
                             CommandParameter="{x:Static data:ApplicationPageNames.ManageTags}"/>
@@ -57,7 +62,7 @@
 
                     <Button Grid.Column="1"
                             Classes="transparent"
-                            Classes.transparent-active="{Binding SettingsIsActive}"
+                            Classes.transparent-active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.Settings}}"
                             Command="{Binding GoToPageCommand}"
                             CommandParameter="{x:Static data:ApplicationPageNames.Settings}">
                         <materialIcons:MaterialIcon Kind="Settings" />

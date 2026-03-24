@@ -13,25 +13,21 @@ public partial class MainViewModel : ViewModelBase
     private string _username = "Spaghet";
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HomePageIsActive))]
-    [NotifyPropertyChangedFor(nameof(LearnIsActive))]
-    [NotifyPropertyChangedFor(nameof(ManageCardsIsActive))]
-    [NotifyPropertyChangedFor(nameof(ManageCategoriesIsActive))]
-    [NotifyPropertyChangedFor(nameof(ManageTagsIsActive))]
-    [NotifyPropertyChangedFor(nameof(SettingsIsActive))]
-    private PageViewModel _currentPage;
+    private PageViewModel _currentPage = null!;
 
-    public bool HomePageIsActive => CurrentPage.PageName == ApplicationPageNames.HomePage;
-    public bool LearnIsActive => CurrentPage.PageName == ApplicationPageNames.Learn;
-    public bool ManageCardsIsActive => CurrentPage.PageName == ApplicationPageNames.ManageCards;
-    public bool ManageCategoriesIsActive => CurrentPage.PageName == ApplicationPageNames.ManageCategories;
-    public bool ManageTagsIsActive => CurrentPage.PageName == ApplicationPageNames.ManageTags;
-    public bool SettingsIsActive => CurrentPage.PageName == ApplicationPageNames.Settings;
+    /// <summary>
+    /// Design-time constructor only.
+    /// </summary>
+    public MainViewModel()
+    {
+        _pageFactory = null!;
+        _currentPage = new HomePageViewModel();
+    }
 
     public MainViewModel(IPageFactory pageFactory)
     {
         _pageFactory = pageFactory;
-        _currentPage = _pageFactory.GetPageViewModel(ApplicationPageNames.HomePage);
+        GoToPage(ApplicationPageNames.HomePage);
     }
     
     [RelayCommand]
