@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         xmlns:vm="clr-namespace:Memento.Avalonia.ViewModels"
+        xmlns:data="clr-namespace:Memento.Avalonia.Data"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Memento.Avalonia.Views.MainView"
         x:DataType="vm:MainViewModel"
@@ -24,31 +25,31 @@
                             Classes.active="{Binding HomePageIsActive}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{Binding HomePageViewModel}"/>
+                            CommandParameter="{x:Static data:ApplicationPageNames.HomePage}"/>
 
                     <Button Content="Learn"
                             Classes.active="{Binding LearnIsActive}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{Binding LearnViewModel}"/>
+                            CommandParameter="{x:Static data:ApplicationPageNames.Learn}"/>
 
                     <Button Content="Manage Cards"
                             Classes.active="{Binding ManageCardsIsActive}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{Binding ManageCardsViewModel}"/>
+                            CommandParameter="{x:Static data:ApplicationPageNames.ManageCards}"/>
 
                     <Button Content="Manage Categories"
                             Classes.active="{Binding ManageCategoriesIsActive}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{Binding ManageCategoriesViewModel}"/>
+                            CommandParameter="{x:Static data:ApplicationPageNames.ManageCategories}"/>
 
                     <Button Content="Manage Tags"
                             Classes.active="{Binding ManageTagsIsActive}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{Binding ManageTagsViewModel}"/>
+                            CommandParameter="{x:Static data:ApplicationPageNames.ManageTags}"/>
                 </StackPanel>
 
                 <Grid Grid.Row="1" ColumnDefinitions="* Auto Auto">
@@ -58,7 +59,7 @@
                             Classes="transparent"
                             Classes.transparent-active="{Binding SettingsIsActive}"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{Binding SettingsViewModel}">
+                            CommandParameter="{x:Static data:ApplicationPageNames.Settings}">
                         <materialIcons:MaterialIcon Kind="Settings" />
                     </Button>
 
