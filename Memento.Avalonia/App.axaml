@@ -15,8 +15,10 @@
     </Application.Styles>
 
     <Application.Resources>
-        <SolidColorBrush x:Key="PrimaryActiveBrush">#6633dd</SolidColorBrush>
+        <SolidColorBrush x:Key="PrimaryActiveBackgrgound">#6633dd</SolidColorBrush>
+        <SolidColorBrush x:Key="ItemBorderBrush">#6633ff</SolidColorBrush>
         <SolidColorBrush x:Key="PrimaryBackground">#141720</SolidColorBrush>
+        <SolidColorBrush x:Key="ImageBackdrop">#111214</SolidColorBrush>
         <SolidColorBrush x:Key="PrimaryForeground">#CFCFCF</SolidColorBrush>
         
         <SolidColorBrush x:Key="PrimaryHoverBackground">#333B5A</SolidColorBrush>

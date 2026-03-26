@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Memento.Avalonia.Data;
@@ -8,12 +9,12 @@ namespace Memento.Avalonia.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     private readonly IPageFactory _pageFactory;
-    
+
     [ObservableProperty]
     private string _username = "Spaghet";
 
     [ObservableProperty]
-    private PageViewModel _currentPage = null!;
+    private PageViewModel _currentPage;
 
     /// <summary>
     /// Design-time constructor only.
@@ -27,17 +28,13 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel(IPageFactory pageFactory)
     {
         _pageFactory = pageFactory;
-        GoToPage(ApplicationPageNames.HomePage);
+        _currentPage = _pageFactory.GetPageViewModel(ApplicationPageNames.HomePage);
     }
-    
-    [RelayCommand]
-    public void GoToPage(object? parameter)
-    {
-        if (parameter is not ApplicationPageNames pageName)
-        {
-            return;
-        }
 
+    [RelayCommand]
+    public async Task GoToPage(ApplicationPageNames pageName)
+    {
         CurrentPage = _pageFactory.GetPageViewModel(pageName);
+        await CurrentPage.OnPageSelected();
     }
 }

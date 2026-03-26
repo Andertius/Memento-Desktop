@@ -2,7 +2,6 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Memento.Avalonia.ViewModels;
-using Memento.Avalonia.Views;
 
 namespace Memento.Avalonia;
 

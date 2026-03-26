@@ -1,0 +1,82 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Memento.Avalonia.ViewModels.CardViewModels"
+             Background="{DynamicResource PrimaryBackground}"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
+             x:Class="Memento.Avalonia.Views.CardViews.CreateCardView"
+             x:DataType="vm:CreateCardViewModel">
+    
+    <Design.DataContext>
+        <vm:CreateCardViewModel />
+    </Design.DataContext>
+
+    <Border Background="{DynamicResource PrimaryBackground}"
+            BorderBrush="{DynamicResource ItemBorderBrush}"
+            BorderThickness="5"
+            CornerRadius="7"
+            ClipToBounds="True"
+            Margin="10"
+            Padding="20">
+
+        <Border.Effect>
+            <DropShadowEffect Color="#151E3E" />
+        </Border.Effect>
+
+        <Grid RowDefinitions="350 Auto Auto Auto Auto Auto" 
+              ColumnDefinitions="300 300"
+              RowSpacing="20"
+              ColumnSpacing="50"
+              HorizontalAlignment="Center">
+            <Panel Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                <Rectangle Height="350" Width="350" Fill="{DynamicResource ImageBackdrop}" />
+
+                <Image Margin="20"
+                       MaxHeight="350"
+                       MaxWidth="350"
+                       Source="/Assets/Spaghet.png"/>
+            </Panel>
+
+            <StackPanel Grid.Row="1" Grid.Column="0">
+                <Label Content="Word" Target="WordTextBox" />
+                <TextBox Text="{Binding Card.Word}" x:Name="WordTextBox" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="1">
+                <Label Content="Translation" Target="TranslationTextBox" />
+                <TextBox Text="{Binding Card.Translation}" x:Name="TranslationTextBox" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Grid.Column="0">
+                <Label Content="Definition" Target="DefinitionTextBox" />
+                <TextBox Text="{Binding Card.Definition}" x:Name="DefinitionTextBox" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Grid.Column="1">
+                <Label Content="Hint" Target="HintTextBox" />
+                <TextBox Text="{Binding Card.Hint}" x:Name="HintTextBox" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Grid.Column="0">
+                <Label Content="Categories" Target="CategoriesComboBox" />
+                <TextBox Text="{Binding Card.Word}" x:Name="CategoriesComboBox" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Grid.Column="1">
+                <Label Content="Tags" Target="TagsComboBox"/>
+                <TextBox Text="{Binding Card.Word}" x:Name="TagsComboBox" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="4"
+                        Grid.Column="1"
+                        Orientation="Horizontal"
+                        Spacing="20"
+                        HorizontalAlignment="Right">
+
+                <Button Content="Cancel" Command="{Binding CancelCommand}" />
+                <Button Content="Save" Command="{Binding SaveCardCommand}" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

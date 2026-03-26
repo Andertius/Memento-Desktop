@@ -4,16 +4,18 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Memento.Avalonia.Data;
-using Memento.Avalonia.Factories;
-using Memento.Avalonia.Views;
+using Memento.Avalonia.Extensions;
 using Memento.Avalonia.ViewModels;
+using Memento.Avalonia.Views;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Memento.Avalonia;
 
 public partial class App : Application
 {
+    private const string _environmentName = "Development";
+    
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -21,29 +23,8 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        var services = new ServiceCollection();
-        services.AddSingleton<MainViewModel>();
-        services.AddTransient<HomePageViewModel>();
-        services.AddTransient<SettingsViewModel>();
-        services.AddTransient<LearnViewModel>();
-        services.AddTransient<ManageCardsViewModel>();
-        services.AddTransient<ManageCategoriesViewModel>();
-        services.AddTransient<ManageTagsViewModel>();
-
-        services.AddTransient<IPageFactory, PageFactory>();
-
-        services.AddSingleton<Func<ApplicationPageNames, PageViewModel>>(sp => name => name switch
-        {
-            ApplicationPageNames.HomePage => sp.GetRequiredService<HomePageViewModel>(),
-            ApplicationPageNames.Learn => sp.GetRequiredService<LearnViewModel>(),
-            ApplicationPageNames.Settings => sp.GetRequiredService<SettingsViewModel>(),
-            ApplicationPageNames.ManageCards => sp.GetRequiredService<ManageCardsViewModel>(),
-            ApplicationPageNames.ManageCategories => sp.GetRequiredService<ManageCategoriesViewModel>(),
-            ApplicationPageNames.ManageTags => sp.GetRequiredService<ManageTagsViewModel>(),
-            _ => throw new InvalidOperationException("Provided page does not exist."),
-        });
-
-        var serviceProvider = services.BuildServiceProvider();
+        var configuration = BuildConfiguration();
+        var serviceProvider = ConfigureServices(configuration);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -60,7 +41,7 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    private void DisableAvaloniaDataAnnotationValidation()
+    private static void DisableAvaloniaDataAnnotationValidation()
     {
         // Get an array of plugins to remove
         var dataValidationPluginsToRemove =
@@ -71,5 +52,28 @@ public partial class App : Application
         {
             BindingPlugins.DataValidators.Remove(plugin);
         }
+    }
+
+    private static IConfiguration BuildConfiguration()
+    {
+        var config = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile($"appsettings.{_environmentName}.json")
+            .Build();
+
+        return config;
+    }
+
+    private static ServiceProvider ConfigureServices(IConfiguration configuration)
+    {
+        var services = new ServiceCollection();
+        services.AddViewModels();
+        services.AddFactories();
+        services.AddClients();
+        services.AddServices();
+        services.AddOptions(configuration);
+
+        return services.BuildServiceProvider();
     }
 }
