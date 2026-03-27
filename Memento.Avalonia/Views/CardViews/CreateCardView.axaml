@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
              x:Class="Memento.Avalonia.Views.CardViews.CreateCardView"
              x:DataType="vm:CreateCardViewModel">
-    
+
     <Design.DataContext>
         <vm:CreateCardViewModel />
     </Design.DataContext>
@@ -24,19 +24,34 @@
             <DropShadowEffect Color="#151E3E" />
         </Border.Effect>
 
-        <Grid RowDefinitions="350 Auto Auto Auto Auto Auto" 
+        <Grid RowDefinitions="350 Auto Auto Auto Auto Auto"
               ColumnDefinitions="300 300"
               RowSpacing="20"
               ColumnSpacing="50"
               HorizontalAlignment="Center">
-            <Panel Grid.ColumnSpan="2" HorizontalAlignment="Center">
-                <Rectangle Height="350" Width="350" Fill="{DynamicResource ImageBackdrop}" />
+            <StackPanel Grid.ColumnSpan="2"
+                        HorizontalAlignment="Center">
+                <Panel Height="350" Width="350">
+                    <Rectangle Fill="{DynamicResource ImageBackdrop}" />
 
-                <Image Margin="20"
-                       MaxHeight="350"
-                       MaxWidth="350"
-                       Source="/Assets/Spaghet.png"/>
-            </Panel>
+                    <Image Margin="20"
+                           MaxHeight="350"
+                           MaxWidth="350"
+                           Source="{Binding Card.ImageBitmap^}" />
+                </Panel>
+
+                <Grid ColumnDefinitions="* *">
+                    <Button Grid.Column="0"
+                            Content="Upload new image"
+                            Command="{Binding UploadImageCommand}"
+                            HorizontalAlignment="Left"/>
+
+                    <Button Grid.Column="1"
+                            Content="Delete image"
+                            Command="{Binding DeleteImageCommand}"
+                            HorizontalAlignment="Right"/>
+                </Grid>
+            </StackPanel>
 
             <StackPanel Grid.Row="1" Grid.Column="0">
                 <Label Content="Word" Target="WordTextBox" />
@@ -64,7 +79,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="3" Grid.Column="1">
-                <Label Content="Tags" Target="TagsComboBox"/>
+                <Label Content="Tags" Target="TagsComboBox" />
                 <TextBox Text="{Binding Card.Word}" x:Name="TagsComboBox" />
             </StackPanel>
 

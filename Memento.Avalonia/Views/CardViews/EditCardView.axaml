@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
              xmlns:vm="clr-namespace:Memento.Avalonia.ViewModels.CardViewModels"
              Background="{DynamicResource PrimaryBackground}"
              x:Class="Memento.Avalonia.Views.CardViews.EditCardView"
@@ -29,14 +29,29 @@
               RowSpacing="20"
               ColumnSpacing="50"
               HorizontalAlignment="Center">
-            <Panel Grid.ColumnSpan="2" HorizontalAlignment="Center">
-                <Rectangle Height="350" Width="350" Fill="{DynamicResource ImageBackdrop}" />
+            <StackPanel Grid.ColumnSpan="2"
+                        HorizontalAlignment="Center">
+                <Panel Height="350" Width="350">
+                    <Rectangle Fill="{DynamicResource ImageBackdrop}" />
 
-                <Image Margin="20"
-                       MaxHeight="350"
-                       MaxWidth="350"
-                       Source="/Assets/Spaghet.png"/>
-            </Panel>
+                    <Image Margin="20"
+                           MaxHeight="350"
+                           MaxWidth="350"
+                           Source="{Binding Card.ImageBitmap^}" />
+                </Panel>
+
+                <Grid ColumnDefinitions="* *">
+                    <Button Grid.Column="0"
+                            Content="Upload new image"
+                            Command="{Binding UploadImageCommand}"
+                            HorizontalAlignment="Left"/>
+
+                    <Button Grid.Column="1"
+                            Content="Delete image"
+                            Command="{Binding DeleteImageCommand}"
+                            HorizontalAlignment="Right"/>
+                </Grid>
+            </StackPanel>
 
             <StackPanel Grid.Row="1" Grid.Column="0">
                 <Label Content="Word" Target="WordTextBox" />

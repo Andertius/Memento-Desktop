@@ -1,4 +1,4 @@
-namespace Memento.Avalonia.Constants;
+namespace Memento.Avalonia.Data;
 
 public static class ApiPaths
 {

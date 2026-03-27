@@ -52,13 +52,13 @@
                                         Command="{Binding ElementName=CardsList, Path=DataContext.EditCardCommand}"
                                         CommandParameter="{Binding}">
                                     <StackPanel>
-                                        <Panel>
-                                            <Rectangle Height="275" Width="275" Fill="{DynamicResource ImageBackdrop}" />
+                                        <Panel Height="275" Width="275">
+                                            <Rectangle Fill="{DynamicResource ImageBackdrop}" />
 
                                             <Image Margin="20"
                                                    MaxHeight="275"
                                                    MaxWidth="275"
-                                                   Source="{Binding ImageBitmap}"/>
+                                                   Source="{Binding ImageBitmap^}"/>
                                         </Panel>
 
                                         <TextBlock Text="{Binding Word}" HorizontalAlignment="Center" FontSize="22" />

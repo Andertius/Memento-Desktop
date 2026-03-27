@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
@@ -15,7 +16,7 @@ namespace Memento.Avalonia;
 public partial class App : Application
 {
     private const string _environmentName = "Development";
-    
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -23,19 +24,18 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        var configuration = BuildConfiguration();
-        var serviceProvider = ConfigureServices(configuration);
-
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
 
-            desktop.MainWindow = new MainView
-            {
-                DataContext = serviceProvider.GetRequiredService<MainViewModel>(),
-            };
+            desktop.MainWindow = new MainView();
+
+            var configuration = BuildConfiguration();
+            var serviceProvider = ConfigureServices(configuration, desktop.MainWindow);
+
+            desktop.MainWindow.DataContext = serviceProvider.GetRequiredService<MainViewModel>();
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -65,13 +65,13 @@ public partial class App : Application
         return config;
     }
 
-    private static ServiceProvider ConfigureServices(IConfiguration configuration)
+    private static ServiceProvider ConfigureServices(IConfiguration configuration, Window mainWindow)
     {
         var services = new ServiceCollection();
         services.AddViewModels();
         services.AddFactories();
         services.AddClients();
-        services.AddServices();
+        services.AddServices(mainWindow);
         services.AddOptions(configuration);
 
         return services.BuildServiceProvider();

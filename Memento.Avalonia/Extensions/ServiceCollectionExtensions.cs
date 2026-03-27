@@ -1,5 +1,5 @@
 using System;
-using Memento.Avalonia.Constants;
+using Avalonia.Controls;
 using Memento.Avalonia.Data;
 using Memento.Avalonia.Factories;
 using Memento.Avalonia.HttpClients;
@@ -55,9 +55,10 @@ public static class ServiceCollectionExtensions
             return services;
         }
 
-        public IServiceCollection AddServices()
+        public IServiceCollection AddServices(Window mainWindow)
         {
             services.AddTransient<IDialogService, DialogService>();
+            services.AddTransient<IFilesService>(_ => new FilesService(mainWindow));
 
             return services;
         }

@@ -1,10 +1,11 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Memento.Avalonia.DataModels;
+using Memento.Avalonia.Services;
 
 namespace Memento.Avalonia.ViewModels.CardViewModels;
 
@@ -27,7 +28,11 @@ public partial class CardViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ImageBitmap))]
-    private string? _image;
+    private string? _imageUrl;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ImageBitmap))]
+    private Bitmap? _uploadedImage;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CombinedCategories))]
@@ -41,16 +46,29 @@ public partial class CardViewModel : ViewModelBase
 
     public string CombinedTags => String.Join(", ", Tags.Select(x => x.Name));
 
-    public Bitmap ImageBitmap => new(AssetLoader.Open(new Uri("avares://Memento.Avalonia/Assets/Spaghet.png")));
+    public Task<Bitmap?> ImageBitmap
+    {
+        get
+        {
+            if (UploadedImage is null)
+            {
+                return ImageUrl is null
+                    ? Task.FromResult<Bitmap?>(null)
+                    : ImageHelper.LoadFromWeb(new Uri(ImageUrl));
+            }
 
-    public static CardViewModel FromDataModel(Card card) => new()
+            return Task.FromResult<Bitmap?>(UploadedImage);
+        }
+    }
+
+    public static CardViewModel FromDataModel(Card card, string? imageUrl = null) => new()
     {
         Id = card.Id,
         Word = card.Word,
         Translation = card.Translation,
         Definition = card.Definition,
         Hint = card.Hint,
-        Image = card.Image,
+        ImageUrl = imageUrl,
         Categories = new ObservableCollection<Category>(card.Categories),
         Tags = new ObservableCollection<Tag>(card.Tags),
     };
@@ -62,7 +80,6 @@ public partial class CardViewModel : ViewModelBase
         Translation = Translation,
         Definition = Definition,
         Hint = Hint,
-        Image = Image,
         Categories = Categories.ToList(),
         Tags = Tags.ToList(),
     };

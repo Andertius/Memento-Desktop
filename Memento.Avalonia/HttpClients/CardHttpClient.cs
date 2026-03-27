@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Memento.Avalonia.Constants;
+using Memento.Avalonia.Data;
 using Memento.Avalonia.DataModels;
 
 namespace Memento.Avalonia.HttpClients;
@@ -18,15 +20,19 @@ public interface ICardHttpClient
     Task<int> AddCard(Card card);
 
     Task UpdateCard(Card card);
+
+    Task UploadImage(int cardId, Stream image);
+    Task DeleteImage(int cardId);
 }
 
-public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHttpClient
+public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHttpClient, IDisposable
 {
     private readonly HttpClient _client = _clientFactory.CreateClient(ClientNames.CardClientName);
 
-    private async Task<string> GetToken()
+    private static async Task<string> GetToken()
     {
-        var client = new HttpClient { BaseAddress = new Uri("http://localhost:5091") };
+        using var client = new HttpClient();
+        client.BaseAddress = new Uri("http://localhost:5091");
 
         var request = new HttpRequestMessage(HttpMethod.Post, ApiPaths.TokenApiPath);
         request.Content = new StringContent(JsonSerializer.Serialize(new { Username = "test", Password = "test" }), Encoding.UTF8, "application/json");
@@ -76,6 +82,40 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
 
         var response = await _client.SendAsync(request);
         response.EnsureSuccessStatusCode();
+    }
+
+    public async Task UploadImage(int cardId, Stream image)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, ApiPaths.CardsApiPath + $"/{cardId}/image");
+
+        var imageContent = new StreamContent(image);
+        imageContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Image.Png);
+
+        var content = new MultipartFormDataContent();
+        content.Add(imageContent, "file", $"{cardId}.png");
+        request.Content = content;
+
+        string token = await GetToken();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await _client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task DeleteImage(int cardId)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Delete, ApiPaths.CardsApiPath + $"/{cardId}/image");
+
+        string token = await GetToken();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await _client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public void Dispose()
+    {
+        _client.Dispose();
     }
 
     private record Token(string AccessToken);

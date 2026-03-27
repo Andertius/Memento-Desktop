@@ -1,4 +1,6 @@
+using System;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Memento.Avalonia.Data;
@@ -21,6 +23,11 @@ public partial class MainViewModel : ViewModelBase
     /// </summary>
     public MainViewModel()
     {
+        if (!Design.IsDesignMode)
+        {
+            throw new InvalidOperationException("Default constructor only allowed in design-time");
+        }
+
         _pageFactory = null!;
         _currentPage = new HomePageViewModel();
     }

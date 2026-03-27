@@ -14,7 +14,7 @@ public interface IDialogService
 public class DialogService : IDialogService
 {
     public async Task ShowDialogAsync<TDialogProvider, TDialogViewModel>(TDialogProvider host, TDialogViewModel dialog)
-        where TDialogProvider : IDialogProvider 
+        where TDialogProvider : IDialogProvider
         where TDialogViewModel : DialogViewModel
     {
         host.DialogViewModel = dialog;
