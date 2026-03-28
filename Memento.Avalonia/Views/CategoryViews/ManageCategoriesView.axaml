@@ -3,38 +3,38 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             xmlns:vm="clr-namespace:Memento.Avalonia.ViewModels.CardViewModels"
+             xmlns:vm="clr-namespace:Memento.Avalonia.ViewModels.CategoryViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              Background="{DynamicResource PrimaryBackground}"
-             x:Class="Memento.Avalonia.Views.CardViews.ManageCardsView"
-             x:DataType="vm:ManageCardsViewModel"
-             x:Name="CardsList">
+             x:Class="Memento.Avalonia.Views.CategoryViews.ManageCategoriesView"
+             x:DataType="vm:ManageCategoriesViewModel"
+             x:Name="CategoryList">
     
     <Design.DataContext>
-        <vm:ManageCardsViewModel />
+        <vm:ManageCategoriesViewModel/>
     </Design.DataContext>
 
     <Grid>
         <Border Padding="20">
             <Grid RowDefinitions="75 *" RowSpacing="20">
                 <StackPanel Grid.Row="0">
-                    <TextBlock Text="Card Management" FontSize="26" HorizontalAlignment="Center" />
-                    
+                    <TextBlock Text="Category Management" FontSize="26" HorizontalAlignment="Center" />
+
                     <StackPanel Orientation="Horizontal">
-                        <Button HorizontalAlignment="Left" Classes="add-item-button" Command="{Binding CreateCardCommand}">
+                        <Button HorizontalAlignment="Left" Classes="add-item-button" Command="{Binding CreateCategoryCommand}">
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <materialIcons:MaterialIcon Kind="Plus" />
-                            
+
                                 <TextBlock Text="Add" FontSize="18" />
                             </StackPanel>
                         </Button>
-                        
+
                         <!-- <TextBox HorizontalAlignment="Right" /> -->
                     </StackPanel>
                 </StackPanel>
 
                 <ScrollViewer Grid.Row="1">
-                    <ItemsControl ItemsSource="{Binding Cards}"
+                    <ItemsControl ItemsSource="{Binding Categories}"
                                   Background="Transparent">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -43,13 +43,13 @@
                         </ItemsControl.ItemsPanel>
 
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="vm:CardViewModel">
+                            <DataTemplate DataType="vm:CategoryViewModel">
                                 <Button BorderBrush="{DynamicResource ItemBorderBrush}"
                                         BorderThickness="1"
                                         CornerRadius="5"
                                         Padding="4"
                                         Width="300"
-                                        Command="{Binding ElementName=CardsList, Path=DataContext.EditCardCommand}"
+                                        Command="{Binding ElementName=CategoryList, Path=DataContext.EditCategoryCommand}"
                                         CommandParameter="{Binding}">
                                     <StackPanel>
                                         <Panel Height="275" Width="275">
@@ -61,8 +61,7 @@
                                                    Source="{Binding ImageBitmap^}"/>
                                         </Panel>
 
-                                        <TextBlock Text="{Binding Word}" HorizontalAlignment="Center" FontSize="22" />
-                                        <TextBlock Text="{Binding CombinedCategories}" />
+                                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" FontSize="22" />
                                         <TextBlock Text="{Binding CombinedTags}" />
                                     </StackPanel>
                                 </Button>

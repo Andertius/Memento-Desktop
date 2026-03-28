@@ -41,6 +41,10 @@
         <DependentUpon>ManageCardsView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\CategoryViews\ManageCategoriesView.axaml.cs">
+        <DependentUpon>ManageCategoriesView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>

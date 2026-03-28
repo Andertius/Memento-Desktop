@@ -7,24 +7,18 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Memento.Avalonia.DataModels;
 using Memento.Avalonia.Services;
 
-namespace Memento.Avalonia.ViewModels.CardViewModels;
+namespace Memento.Avalonia.ViewModels.CategoryViewModels;
 
-public partial class CardViewModel : ViewModelBase
+public partial class CategoryViewModel : ViewModelBase
 {
     [ObservableProperty]
     private int _id;
 
     [ObservableProperty]
-    private string? _word;
+    private string? _name;
 
     [ObservableProperty]
-    private string? _translation;
-
-    [ObservableProperty]
-    private string? _definition;
-
-    [ObservableProperty]
-    private string? _hint;
+    private string? _description;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ImageBitmap))]
@@ -35,16 +29,10 @@ public partial class CardViewModel : ViewModelBase
     private Bitmap? _uploadedImage;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(CombinedCategories))]
-    private ObservableCollection<Category> _categories = [];
-
-    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CombinedTags))]
     private ObservableCollection<Tag> _tags = [];
-
+    
     public string? UploadedImageName { get; set; }
-
-    public string CombinedCategories => String.Join(", ", Categories.Select(x => x.Name));
 
     public string CombinedTags => String.Join(", ", Tags.Select(x => x.Name));
 
@@ -63,26 +51,20 @@ public partial class CardViewModel : ViewModelBase
         }
     }
 
-    public static CardViewModel FromDataModel(Card card, string? imageUrl = null) => new()
+    public static CategoryViewModel FromDataModel(Category category, string? imageUrl = null) => new()
     {
-        Id = card.Id,
-        Word = card.Word,
-        Translation = card.Translation,
-        Definition = card.Definition,
-        Hint = card.Hint,
+        Id = category.Id,
+        Name = category.Name,
+        Description = category.Description,
         ImageUrl = imageUrl,
-        Categories = new ObservableCollection<Category>(card.Categories),
-        Tags = new ObservableCollection<Tag>(card.Tags),
+        Tags = new ObservableCollection<Tag>(category.Tags),
     };
 
-    public Card ToDataModel() => new()
+    public Category ToDataModel() => new()
     {
         Id = Id,
-        Word = Word,
-        Translation = Translation,
-        Definition = Definition,
-        Hint = Hint,
-        Categories = Categories.ToList(),
+        Name = Name,
+        Description = Description,
         Tags = Tags.ToList(),
     };
 }

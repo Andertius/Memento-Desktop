@@ -11,22 +11,22 @@ using Memento.Avalonia.Services;
 using Memento.Avalonia.ViewModels.DialogViewModels;
 using Microsoft.Extensions.Options;
 
-namespace Memento.Avalonia.ViewModels.CardViewModels;
+namespace Memento.Avalonia.ViewModels.CategoryViewModels;
 
-public partial class CreateCardViewModel : DialogViewModelBase
+public partial class CreateCategoryViewModel : DialogViewModelBase
 {
     private readonly ApiClientOptions _options;
 
     [ObservableProperty]
-    private CardViewModel _card = new();
+    private CategoryViewModel _category = new();
 
-    private readonly ICardHttpClient _client;
+    private readonly ICategoryHttpClient _client;
     private readonly IFilesService _filesService;
 
     /// <summary>
     /// Design-time only constructor
     /// </summary>
-    public CreateCardViewModel()
+    public CreateCategoryViewModel()
     {
         if (!Design.IsDesignMode)
         {
@@ -38,8 +38,8 @@ public partial class CreateCardViewModel : DialogViewModelBase
         _options = null!;
     }
 
-    public CreateCardViewModel(
-        ICardHttpClient client,
+    public CreateCategoryViewModel(
+        ICategoryHttpClient client,
         IFilesService filesService,
         IOptions<ApiClientOptions> options)
     {
@@ -49,43 +49,43 @@ public partial class CreateCardViewModel : DialogViewModelBase
     }
 
     [RelayCommand]
-    public async Task SaveCardAsync()
+    public async Task SaveCategory()
     {
-        var card = Card.ToDataModel();
-        int id = await _client.AddCard(card);
+        var category = Category.ToDataModel();
+        int id = await _client.AddCategory(category);
 
-        if (Card.UploadedImage is not null && !String.IsNullOrWhiteSpace(Card.UploadedImageName))
+        if (Category.UploadedImage is not null && !String.IsNullOrWhiteSpace(Category.UploadedImageName))
         {
             using var stream = new MemoryStream();
-            Card.UploadedImage.Save(stream);
+            Category.UploadedImage.Save(stream);
             stream.Position = 0;
 
-            string? fileName = await _client.UploadImage(id, Card.UploadedImageName, stream);
-            Card.ImageUrl = $"{_options.Host}/{ApiPaths.CardsImagesPath}/{fileName}";
-            Card.UploadedImage = null;
+            string? fileName = await _client.UploadImage(id, Category.UploadedImageName, stream);
+            Category.ImageUrl = $"{_options.Host}/{ApiPaths.CategoriesImagesPath}/{fileName}";
+            Category.UploadedImage = null;
         }
 
-        Card.Id = id;
+        Category.Id = id;
         Close();
     }
 
     [RelayCommand]
     public void Cancel()
     {
-        Card.UploadedImage = null;
+        Category.UploadedImage = null;
         Close();
     }
 
     [RelayCommand]
-    public async Task UploadImageAsync()
+    public async Task UploadImage()
     {
-        (Card.UploadedImage, Card.UploadedImageName) = await _filesService.GetBitmap();
+        (Category.UploadedImage, Category.UploadedImageName) = await _filesService.GetBitmap();
     }
 
     [RelayCommand]
     public void DeleteImage()
     {
-        Card.UploadedImage = null;
-        Card.ImageUrl = null;
+        Category.UploadedImage = null;
+        Category.ImageUrl = null;
     }
 }

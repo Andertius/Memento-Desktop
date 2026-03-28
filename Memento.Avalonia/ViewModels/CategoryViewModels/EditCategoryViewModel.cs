@@ -12,18 +12,18 @@ using Memento.Avalonia.Services;
 using Memento.Avalonia.ViewModels.DialogViewModels;
 using Microsoft.Extensions.Options;
 
-namespace Memento.Avalonia.ViewModels.CardViewModels;
+namespace Memento.Avalonia.ViewModels.CategoryViewModels;
 
-public partial class EditCardViewModel : DialogViewModelBase, IDialogProvider
+public partial class EditCategoryViewModel : DialogViewModelBase, IDialogProvider
 {
     private readonly ApiClientOptions _options;
-    private readonly ICardHttpClient _client;
+    private readonly ICategoryHttpClient _client;
     private readonly IFilesService _filesService;
     private readonly IDialogService _dialogService;
     private readonly string? _temporaryImageUrl;
 
     [ObservableProperty]
-    private CardViewModel _card;
+    private CategoryViewModel _category;
 
     [ObservableProperty]
     private DialogViewModelBase? _dialogViewModel;
@@ -31,7 +31,7 @@ public partial class EditCardViewModel : DialogViewModelBase, IDialogProvider
     /// <summary>
     /// Design-time only constructor
     /// </summary>
-    public EditCardViewModel()
+    public EditCategoryViewModel()
     {
         if (!Design.IsDesignMode)
         {
@@ -42,63 +42,63 @@ public partial class EditCardViewModel : DialogViewModelBase, IDialogProvider
         _filesService = null!;
         _dialogService = null!;
         _options = null!;
-        _card = new CardViewModel();
-        _temporaryImageUrl = Card.ImageUrl;
+        _category = new CategoryViewModel();
+        _temporaryImageUrl = Category.ImageUrl;
     }
 
-    public EditCardViewModel(
-        ICardHttpClient client,
+    public EditCategoryViewModel(
+        ICategoryHttpClient client,
         IFilesService filesService,
         IDialogService dialogService,
         IOptions<ApiClientOptions> options,
-        CardViewModel card)
+        CategoryViewModel category)
     {
         _client = client;
         _filesService = filesService;
         _dialogService = dialogService;
         _options = options.Value;
-        _card = card;
-        _temporaryImageUrl = Card.ImageUrl;
+        _category = category;
+        _temporaryImageUrl = Category.ImageUrl;
     }
 
     public bool Deleted { get; private set; }
 
     [RelayCommand]
-    public async Task SaveCardAsync()
+    public async Task SaveCategory()
     {
-        if (Card.UploadedImage is not null && !String.IsNullOrWhiteSpace(Card.UploadedImageName))
+        if (Category.UploadedImage is not null && !String.IsNullOrWhiteSpace(Category.UploadedImageName))
         {
             using var stream = new MemoryStream();
-            Card.UploadedImage.Save(stream);
+            Category.UploadedImage.Save(stream);
             stream.Position = 0;
 
-            string? fileName = await _client.UploadImage(Card.Id, Card.UploadedImageName, stream);
-            Card.ImageUrl = $"{_options.Host}/{ApiPaths.CardsImagesPath}/{fileName}";
-            Card.UploadedImage = null;
+            string? fileName = await _client.UploadImage(Category.Id, Category.UploadedImageName, stream);
+            Category.ImageUrl = $"{_options.Host}/{ApiPaths.CategoriesImagesPath}/{fileName}";
+            Category.UploadedImage = null;
         }
         else
         {
-            await _client.DeleteImage(Card.Id);
+            await _client.DeleteImage(Category.Id);
         }
 
-        await _client.UpdateCard(Card.ToDataModel());
+        await _client.UpdateCategory(Category.ToDataModel());
         Close();
     }
 
     [RelayCommand]
     public void Cancel()
     {
-        Card.ImageUrl = _temporaryImageUrl;
-        Card.UploadedImage = null;
+        Category.ImageUrl = _temporaryImageUrl;
+        Category.UploadedImage = null;
         Close();
     }
 
     [RelayCommand]
-    public async Task DeleteCardAsync()
+    public async Task DeleteCategory()
     {
         var confirmViewModel = new DeleteConfirmationDialogViewModel
         {
-            DeletedObjectName = Card.Word,
+            DeletedObjectName = Category.Name,
         };
         await _dialogService.ShowDialogAsync(this, confirmViewModel);
 
@@ -107,22 +107,22 @@ public partial class EditCardViewModel : DialogViewModelBase, IDialogProvider
             return;
         }
 
-        await _client.DeleteCard(Card.Id);
+        await _client.DeleteCategory(Category.Id);
 
         Deleted = true;
         Close();
     }
 
     [RelayCommand]
-    public async Task UploadImageAsync()
+    public async Task UploadImage()
     {
-        (Card.UploadedImage, Card.UploadedImageName) = await _filesService.GetBitmap();
+        (Category.UploadedImage, Category.UploadedImageName) = await _filesService.GetBitmap();
     }
 
     [RelayCommand]
     public void DeleteImage()
     {
-        Card.UploadedImage = null;
-        Card.ImageUrl = null;
+        Category.UploadedImage = null;
+        Category.ImageUrl = null;
     }
 }

@@ -7,34 +7,34 @@ namespace Memento.Avalonia.Services;
 
 public interface IFilesService
 {
-    Task<Bitmap?> GetBitmap();
+    Task<(Bitmap?, string?)> GetBitmap();
 }
 
 public sealed class FilesService(Window _traget) : IFilesService
 {
-    public async Task<Bitmap?> GetBitmap()
+    public async Task<(Bitmap?, string?)> GetBitmap()
     {
         var topLevel = TopLevel.GetTopLevel(_traget);
 
         if (topLevel is null)
         {
-            return null;
+            return (null, null);
         }
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Choose a png file",
             AllowMultiple = false,
-            FileTypeFilter = [FilePickerFileTypes.ImagePng],
+            FileTypeFilter = [FilePickerFileTypes.ImageAll],
         });
 
         if (files.Count == 0)
         {
-            return null;
+            return (null, null);
         }
 
         var stream = await files[0].OpenReadAsync();
 
-        return new Bitmap(stream);
+        return (new Bitmap(stream), files[0].Name);
     }
 }

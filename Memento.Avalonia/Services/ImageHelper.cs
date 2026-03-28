@@ -9,7 +9,7 @@ namespace Memento.Avalonia.Services;
 
 public static class ImageHelper
 {
-    public static async Task<Bitmap?> LoadFromWeb(Uri url)
+    public static async Task<Bitmap?> LoadFromServer(Uri url)
     {
         using var httpClient = new HttpClient();
 

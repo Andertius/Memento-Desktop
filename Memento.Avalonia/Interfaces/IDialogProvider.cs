@@ -1,9 +1,8 @@
-using System.Threading.Tasks;
-using Memento.Avalonia.ViewModels;
+using Memento.Avalonia.ViewModels.DialogViewModels;
 
 namespace Memento.Avalonia.Interfaces;
 
 public interface IDialogProvider
 {
-    DialogViewModel DialogViewModel { get; set; }
+    DialogViewModelBase DialogViewModel { get; set; }
 }

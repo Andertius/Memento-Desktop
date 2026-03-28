@@ -4,12 +4,12 @@ using Memento.Avalonia.ViewModels;
 
 namespace Memento.Avalonia.Factories;
 
-public interface IPageFactory
+public interface IPageViewModelFactory
 {
     PageViewModel GetPageViewModel(ApplicationPageNames pageName);
 }
 
-public sealed class PageFactory(Func<ApplicationPageNames, PageViewModel> _factory) : IPageFactory
+public sealed class PageViewModelFactory(Func<ApplicationPageNames, PageViewModel> _factory) : IPageViewModelFactory
 {
     public PageViewModel GetPageViewModel(ApplicationPageNames pageName)
         => _factory.Invoke(pageName);

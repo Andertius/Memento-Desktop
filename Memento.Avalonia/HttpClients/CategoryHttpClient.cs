@@ -14,24 +14,24 @@ using Memento.Avalonia.Responses;
 
 namespace Memento.Avalonia.HttpClients;
 
-public interface ICardHttpClient
+public interface ICategoryHttpClient
 {
-    Task<List<Card>> GetCards();
+    Task<List<Category>> GetCategories();
 
-    Task<int> AddCard(Card card);
+    Task<int> AddCategory(Category category);
 
-    Task UpdateCard(Card card);
+    Task UpdateCategory(Category category);
 
-    Task DeleteCard(int cardId);
+    Task DeleteCategory(int categoryId);
 
-    Task<string?> UploadImage(int cardId, string fileName, Stream image);
+    Task<string?> UploadImage(int categoryId, string fileName, Stream image);
 
-    Task DeleteImage(int cardId);
+    Task DeleteImage(int categoryId);
 }
 
-public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHttpClient, IDisposable
+public sealed class CategoryHttpClient(IHttpClientFactory _clientFactory) : ICategoryHttpClient, IDisposable
 {
-    private readonly HttpClient _client = _clientFactory.CreateClient(ClientNames.CardClientName);
+    private readonly HttpClient _client = _clientFactory.CreateClient(ClientNames.CategoryClientName);
 
     private static async Task<string> GetToken()
     {
@@ -47,24 +47,24 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
         return (await response.Content.ReadFromJsonAsync<TokenResponse>())!.AccessToken;
     }
 
-    public async Task<List<Card>> GetCards()
+    public async Task<List<Category>> GetCategories()
     {
         string token = await GetToken();
-        using var request = new HttpRequestMessage(HttpMethod.Get, ApiPaths.CardsApiPath);
+        using var request = new HttpRequestMessage(HttpMethod.Get, ApiPaths.CategoriesApiPath);
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var response = await _client.SendAsync(request);
         response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadFromJsonAsync<List<Card>>() ?? [];
+        return await response.Content.ReadFromJsonAsync<List<Category>>() ?? [];
     }
 
-    public async Task<int> AddCard(Card card)
+    public async Task<int> AddCategory(Category category)
     {
         string token = await GetToken();
-        using var request = new HttpRequestMessage(HttpMethod.Post, ApiPaths.CardsApiPath);
-        request.Content = new StringContent(JsonSerializer.Serialize(card), Encoding.UTF8, "application/json");
+        using var request = new HttpRequestMessage(HttpMethod.Post, ApiPaths.CategoriesApiPath);
+        request.Content = new StringContent(JsonSerializer.Serialize(category), Encoding.UTF8, "application/json");
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -76,11 +76,11 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
             : 0;
     }
 
-    public async Task UpdateCard(Card card)
+    public async Task UpdateCategory(Category category)
     {
         string token = await GetToken();
-        using var request = new HttpRequestMessage(HttpMethod.Put, ApiPaths.CardsApiPath);
-        request.Content = new StringContent(JsonSerializer.Serialize(card), Encoding.UTF8, "application/json");
+        using var request = new HttpRequestMessage(HttpMethod.Put, ApiPaths.CategoriesApiPath);
+        request.Content = new StringContent(JsonSerializer.Serialize(category), Encoding.UTF8, "application/json");
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -88,10 +88,10 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task DeleteCard(int cardId)
+    public async Task DeleteCategory(int categoryId)
     {
         string token = await GetToken();
-        using var request = new HttpRequestMessage(HttpMethod.Delete, $"{ApiPaths.CardsApiPath}/{cardId}");
+        using var request = new HttpRequestMessage(HttpMethod.Delete, $"{ApiPaths.CategoriesApiPath}/{categoryId}");
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -99,9 +99,9 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<string?> UploadImage(int cardId, string fileName, Stream image)
+    public async Task<string?> UploadImage(int categoryId, string fileName, Stream image)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Post, ApiPaths.CardsApiPath + $"/{cardId}/image");
+        using var request = new HttpRequestMessage(HttpMethod.Post, ApiPaths.CategoriesApiPath + $"/{categoryId}/image");
 
         using var imageContent = new StreamContent(image);
         imageContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Image.Png);
@@ -121,9 +121,9 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
         return imageResponse?.FileName;
     }
 
-    public async Task DeleteImage(int cardId)
+    public async Task DeleteImage(int categoryId)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Delete, ApiPaths.CardsApiPath + $"/{cardId}/image");
+        using var request = new HttpRequestMessage(HttpMethod.Delete, ApiPaths.CategoriesApiPath + $"/{categoryId}/image");
 
         string token = await GetToken();
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);

@@ -1,6 +1,6 @@
 namespace Memento.Avalonia.Options;
 
-public sealed class CardClientOptions
+public sealed class ApiClientOptions
 {
     public string Host { get; set; } = "";
 }

@@ -7,6 +7,7 @@ using Memento.Avalonia.Options;
 using Memento.Avalonia.Services;
 using Memento.Avalonia.ViewModels;
 using Memento.Avalonia.ViewModels.CardViewModels;
+using Memento.Avalonia.ViewModels.CategoryViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -32,7 +33,9 @@ public static class ServiceCollectionExtensions
 
         public IServiceCollection AddFactories()
         {
-            services.AddTransient<IPageFactory, PageFactory>();
+            services.AddTransient<IPageViewModelFactory, PageViewModelFactory>();
+            services.AddTransient<ICardViewModelFactory, CardViewModelFactory>();
+            services.AddTransient<ICategoryViewModelFactory, CategoryViewModelFactory>();
 
             services.AddSingleton<Func<ApplicationPageNames, PageViewModel>>(sp => name => name switch
             {
@@ -50,7 +53,7 @@ public static class ServiceCollectionExtensions
 
         public IServiceCollection AddOptions(IConfiguration configuration)
         {
-            services.Configure<CardClientOptions>(configuration.GetSection(nameof(CardClientOptions)));
+            services.Configure<ApiClientOptions>(configuration.GetSection(nameof(ApiClientOptions)));
 
             return services;
         }
@@ -67,11 +70,18 @@ public static class ServiceCollectionExtensions
         {
             services.AddHttpClient(ClientNames.CardClientName, (sp, client) =>
             {
-                var options = sp.GetRequiredService<IOptions<CardClientOptions>>();
+                var options = sp.GetRequiredService<IOptions<ApiClientOptions>>();
+                client.BaseAddress = new Uri($"{options.Value.Host}");
+            });
+
+            services.AddHttpClient(ClientNames.CategoryClientName, (sp, client) =>
+            {
+                var options = sp.GetRequiredService<IOptions<ApiClientOptions>>();
                 client.BaseAddress = new Uri($"{options.Value.Host}");
             });
 
             services.AddTransient<ICardHttpClient, CardHttpClient>();
+            services.AddTransient<ICategoryHttpClient, CategoryHttpClient>();
 
             return services;
         }

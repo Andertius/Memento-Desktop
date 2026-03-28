@@ -14,26 +14,26 @@ using Memento.Avalonia.Services;
 using Memento.Avalonia.ViewModels.DialogViewModels;
 using Microsoft.Extensions.Options;
 
-namespace Memento.Avalonia.ViewModels.CardViewModels;
+namespace Memento.Avalonia.ViewModels.CategoryViewModels;
 
-public partial class ManageCardsViewModel : PageViewModel, IDialogProvider
+public partial class ManageCategoriesViewModel : PageViewModel, IDialogProvider
 {
     [ObservableProperty]
-    private ObservableCollection<CardViewModel> _cards = [];
+    private ObservableCollection<CategoryViewModel> _categories = [];
 
     [ObservableProperty]
     private DialogViewModelBase? _dialogViewModel;
 
-    private readonly ICardHttpClient _client;
-    private readonly ICardViewModelFactory _cardViewModelFactory;
+    private readonly ICategoryHttpClient _client;
+    private readonly ICategoryViewModelFactory _categoryViewModelFactory;
     private readonly IDialogService _dialogService;
     private readonly IOptions<ApiClientOptions> _options;
 
     /// <summary>
     /// Design-time only constructor
     /// </summary>
-    public ManageCardsViewModel()
-        : base(ApplicationPageNames.ManageCards)
+    public ManageCategoriesViewModel()
+        : base(ApplicationPageNames.ManageCategories)
     {
         if (!Design.IsDesignMode)
         {
@@ -41,51 +41,51 @@ public partial class ManageCardsViewModel : PageViewModel, IDialogProvider
         }
 
         _client = null!;
-        _cardViewModelFactory = null!;
         _dialogService = null!;
+        _categoryViewModelFactory = null!;
         _options = null!;
     }
 
-    public ManageCardsViewModel(
-        ICardHttpClient client,
-        ICardViewModelFactory cardViewModelFactory,
+    public ManageCategoriesViewModel(
+        ICategoryHttpClient client,
+        ICategoryViewModelFactory categoryViewModelFactory,
         IDialogService dialogService,
         IOptions<ApiClientOptions> options)
-        : base(ApplicationPageNames.ManageCards)
+        : base(ApplicationPageNames.ManageCategories)
     {
         _client = client;
-        _cardViewModelFactory = cardViewModelFactory;
+        _categoryViewModelFactory = categoryViewModelFactory;
         _dialogService = dialogService;
         _options = options;
     }
 
     public override async Task OnPageSelected()
     {
-        var result = await _client.GetCards();
-        Cards = new ObservableCollection<CardViewModel>(result.Select(x => CardViewModel.FromDataModel(x, $"{_options.Value.Host}/{ApiPaths.CardsImagesPath}/{x.Image}")));
+        var result = await _client.GetCategories();
+        Categories = new ObservableCollection<CategoryViewModel>(result.Select(x => CategoryViewModel.FromDataModel(x, $"{_options.Value.Host}/{ApiPaths.CategoriesImagesPath}/{x.Image}")));
     }
 
     [RelayCommand]
-    public async Task CreateCardAsync()
+    public async Task CreateCategoryAsync()
     {
-        var viewModel = _cardViewModelFactory.CreateCreateCardViewModel();
+        var viewModel = _categoryViewModelFactory.CreateCreateCategoryViewModel();
         await _dialogService.ShowDialogAsync(this, viewModel);
 
-        if (viewModel.Card.Id != 0)
+        if (viewModel.Category.Id != 0)
         {
-            Cards.Add(viewModel.Card);
+            Categories.Add(viewModel.Category);
         }
     }
 
     [RelayCommand]
-    public async Task EditCard(CardViewModel cardViewModel)
+    public async Task EditCategoryAsync(CategoryViewModel cardViewModel)
     {
-        var viewModel = _cardViewModelFactory.CreateEditCardViewModel(cardViewModel);
+        var viewModel = _categoryViewModelFactory.CreateEditCategoryViewModel(cardViewModel);
         await _dialogService.ShowDialogAsync(this, viewModel);
 
         if (viewModel.Deleted)
         {
-            Cards.Remove(viewModel.Card);
+            Categories.Remove(viewModel.Category);
         }
     }
 }

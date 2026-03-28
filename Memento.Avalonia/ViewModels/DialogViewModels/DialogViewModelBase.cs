@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Memento.Avalonia.ViewModels;
+namespace Memento.Avalonia.ViewModels.DialogViewModels;
 
-public partial class DialogViewModel : ViewModelBase
+public abstract partial class DialogViewModelBase : ViewModelBase
 {
     [ObservableProperty]
     private bool _isDialogOpen;
