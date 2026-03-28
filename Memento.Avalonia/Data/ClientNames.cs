@@ -2,7 +2,5 @@ namespace Memento.Avalonia.Data;
 
 public static class ClientNames
 {
-    public const string CardClientName = nameof(CardClientName);
-        
-    public const string CategoryClientName = nameof(CategoryClientName);
+    public const string ApiClientName = nameof(ApiClientName);
 }

@@ -57,12 +57,12 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="0">
-                    <Label Content="Word" Target="NameTextBox" />
+                    <Label Content="Name" Target="NameTextBox" />
                     <TextBox Text="{Binding Category.Name}" x:Name="NameTextBox" />
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="1">
-                    <Label Content="Translation" Target="DescriptionTextBox" />
+                    <Label Content="Description" Target="DescriptionTextBox" />
                     <TextBox Text="{Binding Category.Description}" x:Name="DescriptionTextBox" />
                 </StackPanel>
 

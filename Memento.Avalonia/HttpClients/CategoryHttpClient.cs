@@ -31,7 +31,7 @@ public interface ICategoryHttpClient
 
 public sealed class CategoryHttpClient(IHttpClientFactory _clientFactory) : ICategoryHttpClient, IDisposable
 {
-    private readonly HttpClient _client = _clientFactory.CreateClient(ClientNames.CategoryClientName);
+    private readonly HttpClient _client = _clientFactory.CreateClient(ClientNames.ApiClientName);
 
     private static async Task<string> GetToken()
     {

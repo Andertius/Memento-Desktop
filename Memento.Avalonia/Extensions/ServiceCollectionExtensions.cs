@@ -8,6 +8,7 @@ using Memento.Avalonia.Services;
 using Memento.Avalonia.ViewModels;
 using Memento.Avalonia.ViewModels.CardViewModels;
 using Memento.Avalonia.ViewModels.CategoryViewModels;
+using Memento.Avalonia.ViewModels.TagViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -36,6 +37,7 @@ public static class ServiceCollectionExtensions
             services.AddTransient<IPageViewModelFactory, PageViewModelFactory>();
             services.AddTransient<ICardViewModelFactory, CardViewModelFactory>();
             services.AddTransient<ICategoryViewModelFactory, CategoryViewModelFactory>();
+            services.AddTransient<ITagViewModelFactory, TagViewModelFactory>();
 
             services.AddSingleton<Func<ApplicationPageNames, PageViewModel>>(sp => name => name switch
             {
@@ -68,13 +70,7 @@ public static class ServiceCollectionExtensions
 
         public IServiceCollection AddClients()
         {
-            services.AddHttpClient(ClientNames.CardClientName, (sp, client) =>
-            {
-                var options = sp.GetRequiredService<IOptions<ApiClientOptions>>();
-                client.BaseAddress = new Uri($"{options.Value.Host}");
-            });
-
-            services.AddHttpClient(ClientNames.CategoryClientName, (sp, client) =>
+            services.AddHttpClient(ClientNames.ApiClientName, (sp, client) =>
             {
                 var options = sp.GetRequiredService<IOptions<ApiClientOptions>>();
                 client.BaseAddress = new Uri($"{options.Value.Host}");
@@ -82,6 +78,7 @@ public static class ServiceCollectionExtensions
 
             services.AddTransient<ICardHttpClient, CardHttpClient>();
             services.AddTransient<ICategoryHttpClient, CategoryHttpClient>();
+            services.AddTransient<ITagHttpClient, TagHttpClient>();
 
             return services;
         }

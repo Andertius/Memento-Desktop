@@ -1,0 +1,71 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:vm="clr-namespace:Memento.Avalonia.ViewModels.TagViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             Background="{DynamicResource PrimaryBackground}"
+             x:Class="Memento.Avalonia.Views.TagViews.ManageTagsView"
+             x:DataType="vm:ManageTagsViewModel"
+             x:Name="CategoryList">
+    
+    <Design.DataContext>
+        <vm:ManageTagsViewModel/>
+    </Design.DataContext>
+
+    <Grid>
+        <Border Padding="20">
+            <Grid RowDefinitions="75 *" RowSpacing="20">
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="Category Management" FontSize="26" HorizontalAlignment="Center" />
+
+                    <StackPanel Orientation="Horizontal">
+                        <Button HorizontalAlignment="Left" Classes="add-item-button" Command="{Binding CreateTagCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <materialIcons:MaterialIcon Kind="Plus" />
+
+                                <TextBlock Text="Add" FontSize="18" />
+                            </StackPanel>
+                        </Button>
+
+                        <!-- <TextBox HorizontalAlignment="Right" /> -->
+                    </StackPanel>
+                </StackPanel>
+
+                <ScrollViewer Grid.Row="1">
+                    <ItemsControl ItemsSource="{Binding Tags}"
+                                  Background="Transparent">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="10" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="vm:TagViewModel">
+                                <Button BorderBrush="{DynamicResource ItemBorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="5"
+                                        Padding="4"
+                                        Width="300"
+                                        Command="{Binding ElementName=CategoryList, Path=DataContext.EditTagCommand}"
+                                        CommandParameter="{Binding}">
+                                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" FontSize="22" />
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <Grid IsVisible="{Binding DialogViewModel.IsDialogOpen, FallbackValue=false}">
+            <Border Padding="25" Background="Black" Opacity="0.5" />
+
+            <ContentControl Content="{Binding DialogViewModel}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+        </Grid>
+    </Grid>
+</UserControl>

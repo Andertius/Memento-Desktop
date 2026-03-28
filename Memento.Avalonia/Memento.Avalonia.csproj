@@ -45,6 +45,18 @@
         <DependentUpon>ManageCategoriesView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\TagViews\CreateTagView.axaml.cs">
+        <DependentUpon>CreateCategoryView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\TagViews\EditTagView.axaml.cs">
+        <DependentUpon>EditCategoryView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\TagViews\ManageTagsView.axaml.cs">
+        <DependentUpon>ManageCategoriesView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>

@@ -31,7 +31,7 @@ public interface ICardHttpClient
 
 public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHttpClient, IDisposable
 {
-    private readonly HttpClient _client = _clientFactory.CreateClient(ClientNames.CardClientName);
+    private readonly HttpClient _client = _clientFactory.CreateClient(ClientNames.ApiClientName);
 
     private static async Task<string> GetToken()
     {

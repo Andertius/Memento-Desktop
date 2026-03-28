@@ -64,7 +64,7 @@ public partial class EditCategoryViewModel : DialogViewModelBase, IDialogProvide
     public bool Deleted { get; private set; }
 
     [RelayCommand]
-    public async Task SaveCategory()
+    public async Task SaveCategoryAsync()
     {
         if (Category.UploadedImage is not null && !String.IsNullOrWhiteSpace(Category.UploadedImageName))
         {
@@ -94,12 +94,9 @@ public partial class EditCategoryViewModel : DialogViewModelBase, IDialogProvide
     }
 
     [RelayCommand]
-    public async Task DeleteCategory()
+    public async Task DeleteCategoryAsync()
     {
-        var confirmViewModel = new DeleteConfirmationDialogViewModel
-        {
-            DeletedObjectName = Category.Name,
-        };
+        var confirmViewModel = new DeleteConfirmationDialogViewModel { DeletedObjectName = Category.Name };
         await _dialogService.ShowDialogAsync(this, confirmViewModel);
 
         if (!confirmViewModel.Confirmed)

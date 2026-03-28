@@ -49,7 +49,7 @@ public partial class CreateCategoryViewModel : DialogViewModelBase
     }
 
     [RelayCommand]
-    public async Task SaveCategory()
+    public async Task SaveCategoryAsync()
     {
         var category = Category.ToDataModel();
         int id = await _client.AddCategory(category);
@@ -77,7 +77,7 @@ public partial class CreateCategoryViewModel : DialogViewModelBase
     }
 
     [RelayCommand]
-    public async Task UploadImage()
+    public async Task UploadImageAsync()
     {
         (Category.UploadedImage, Category.UploadedImageName) = await _filesService.GetBitmap();
     }

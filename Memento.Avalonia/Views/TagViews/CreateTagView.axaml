@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Memento.Avalonia.ViewModels.TagViewModels"
+             Background="{DynamicResource PrimaryBackground}"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
+             x:Class="Memento.Avalonia.Views.TagViews.CreateTagView"
+             x:DataType="vm:CreateTagViewModel">
+
+    <Design.DataContext>
+        <vm:CreateTagViewModel />
+    </Design.DataContext>
+
+    <Border Background="{DynamicResource PrimaryBackground}"
+            BorderBrush="{DynamicResource ItemBorderBrush}"
+            BorderThickness="5"
+            CornerRadius="7"
+            ClipToBounds="True"
+            Margin="10"
+            Padding="20">
+
+        <Border.Effect>
+            <DropShadowEffect Color="#151E3E" />
+        </Border.Effect>
+
+        <Grid RowDefinitions="Auto Auto"
+              ColumnDefinitions="300 300"
+              RowSpacing="20"
+              ColumnSpacing="50"
+              HorizontalAlignment="Center">
+            <StackPanel Grid.Row="0" Grid.Column="0">
+                <Label Content="Name" Target="NameTextBox" />
+                <TextBox Text="{Binding Tag.Name}" x:Name="NameTextBox" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1"
+                        Grid.Column="1"
+                        Orientation="Horizontal"
+                        Spacing="20"
+                        HorizontalAlignment="Right">
+
+                <Button Content="Cancel" Command="{Binding CancelCommand}" />
+                <Button Content="Save" Command="{Binding SaveTagCommand}" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>
