@@ -1,16 +1,15 @@
 using System;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Memento.Avalonia.HttpClients;
 using Memento.Avalonia.ViewModels.DialogViewModels;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels.TagViewModels;
 
 public partial class CreateTagViewModel : DialogViewModelBase
 {
-    [ObservableProperty]
+    [Reactive]
     private TagViewModel _tag = new();
 
     private readonly ITagHttpClient _client;
@@ -33,7 +32,7 @@ public partial class CreateTagViewModel : DialogViewModelBase
         _client = client;
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task SaveTag()
     {
         var tag = Tag.ToDataModel();
@@ -42,7 +41,7 @@ public partial class CreateTagViewModel : DialogViewModelBase
         Close();
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public void Cancel()
     {
         Close();

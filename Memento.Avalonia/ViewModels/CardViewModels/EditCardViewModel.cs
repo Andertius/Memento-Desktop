@@ -1,9 +1,9 @@
 using System;
 using System.IO;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Memento.Avalonia.Data;
 using Memento.Avalonia.HttpClients;
 using Memento.Avalonia.Interfaces;
@@ -11,6 +11,8 @@ using Memento.Avalonia.Options;
 using Memento.Avalonia.Services;
 using Memento.Avalonia.ViewModels.DialogViewModels;
 using Microsoft.Extensions.Options;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels.CardViewModels;
 
@@ -18,14 +20,13 @@ public partial class EditCardViewModel : DialogViewModelBase, IDialogProvider
 {
     private readonly ApiClientOptions _options;
     private readonly ICardHttpClient _client;
-    private readonly IFilesService _filesService;
     private readonly IDialogService _dialogService;
     private readonly string? _temporaryImageUrl;
 
-    [ObservableProperty]
+    [Reactive]
     private CardViewModel _card;
 
-    [ObservableProperty]
+    [Reactive]
     private DialogViewModelBase? _dialogViewModel;
 
     /// <summary>
@@ -39,7 +40,6 @@ public partial class EditCardViewModel : DialogViewModelBase, IDialogProvider
         }
 
         _client = null!;
-        _filesService = null!;
         _dialogService = null!;
         _options = null!;
         _card = new CardViewModel();
@@ -48,22 +48,22 @@ public partial class EditCardViewModel : DialogViewModelBase, IDialogProvider
 
     public EditCardViewModel(
         ICardHttpClient client,
-        IFilesService filesService,
         IDialogService dialogService,
         IOptions<ApiClientOptions> options,
         CardViewModel card)
     {
         _client = client;
-        _filesService = filesService;
         _dialogService = dialogService;
         _options = options.Value;
         _card = card;
         _temporaryImageUrl = Card.ImageUrl;
     }
 
+    public Interaction<Unit, ImageData> OpenFile { get; } = new();
+
     public bool Deleted { get; private set; }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task SaveCardAsync()
     {
         if (Card.UploadedImage is not null && !String.IsNullOrWhiteSpace(Card.UploadedImageName))
@@ -85,7 +85,7 @@ public partial class EditCardViewModel : DialogViewModelBase, IDialogProvider
         Close();
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public void Cancel()
     {
         Card.ImageUrl = _temporaryImageUrl;
@@ -93,7 +93,7 @@ public partial class EditCardViewModel : DialogViewModelBase, IDialogProvider
         Close();
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task DeleteCardAsync()
     {
         var confirmViewModel = new DeleteConfirmationDialogViewModel
@@ -113,13 +113,13 @@ public partial class EditCardViewModel : DialogViewModelBase, IDialogProvider
         Close();
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task UploadImageAsync()
     {
-        (Card.UploadedImage, Card.UploadedImageName) = await _filesService.GetBitmap();
+        (Card.UploadedImage, Card.UploadedImageName) = await OpenFile.Handle(Unit.Default);
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public void DeleteImage()
     {
         Card.UploadedImage = null;

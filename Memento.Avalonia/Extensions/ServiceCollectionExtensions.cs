@@ -60,10 +60,9 @@ public static class ServiceCollectionExtensions
             return services;
         }
 
-        public IServiceCollection AddServices(Window mainWindow)
+        public IServiceCollection AddServices()
         {
             services.AddTransient<IDialogService, DialogService>();
-            services.AddTransient<IFilesService>(_ => new FilesService(mainWindow));
 
             return services;
         }

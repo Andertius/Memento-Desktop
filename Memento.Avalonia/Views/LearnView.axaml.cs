@@ -1,8 +1,9 @@
-using Avalonia.Controls;
+using Memento.Avalonia.ViewModels;
+using ReactiveUI.Avalonia;
 
 namespace Memento.Avalonia.Views;
 
-public partial class LearnView : UserControl
+public partial class LearnView : ReactiveUserControl<LearnViewModel>
 {
     public LearnView()
     {

@@ -1,9 +1,9 @@
 using System;
 using System.IO;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Memento.Avalonia.Data;
 using Memento.Avalonia.HttpClients;
 using Memento.Avalonia.Interfaces;
@@ -11,6 +11,8 @@ using Memento.Avalonia.Options;
 using Memento.Avalonia.Services;
 using Memento.Avalonia.ViewModels.DialogViewModels;
 using Microsoft.Extensions.Options;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels.CategoryViewModels;
 
@@ -18,14 +20,13 @@ public partial class EditCategoryViewModel : DialogViewModelBase, IDialogProvide
 {
     private readonly ApiClientOptions _options;
     private readonly ICategoryHttpClient _client;
-    private readonly IFilesService _filesService;
     private readonly IDialogService _dialogService;
     private readonly string? _temporaryImageUrl;
 
-    [ObservableProperty]
+    [Reactive]
     private CategoryViewModel _category;
 
-    [ObservableProperty]
+    [Reactive]
     private DialogViewModelBase? _dialogViewModel;
 
     /// <summary>
@@ -39,7 +40,6 @@ public partial class EditCategoryViewModel : DialogViewModelBase, IDialogProvide
         }
 
         _client = null!;
-        _filesService = null!;
         _dialogService = null!;
         _options = null!;
         _category = new CategoryViewModel();
@@ -48,22 +48,22 @@ public partial class EditCategoryViewModel : DialogViewModelBase, IDialogProvide
 
     public EditCategoryViewModel(
         ICategoryHttpClient client,
-        IFilesService filesService,
         IDialogService dialogService,
         IOptions<ApiClientOptions> options,
         CategoryViewModel category)
     {
         _client = client;
-        _filesService = filesService;
         _dialogService = dialogService;
         _options = options.Value;
         _category = category;
         _temporaryImageUrl = Category.ImageUrl;
     }
 
+    public Interaction<Unit, ImageData> OpenFile { get; } = new();
+
     public bool Deleted { get; private set; }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task SaveCategoryAsync()
     {
         if (Category.UploadedImage is not null && !String.IsNullOrWhiteSpace(Category.UploadedImageName))
@@ -85,7 +85,7 @@ public partial class EditCategoryViewModel : DialogViewModelBase, IDialogProvide
         Close();
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public void Cancel()
     {
         Category.ImageUrl = _temporaryImageUrl;
@@ -93,7 +93,7 @@ public partial class EditCategoryViewModel : DialogViewModelBase, IDialogProvide
         Close();
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task DeleteCategoryAsync()
     {
         var confirmViewModel = new DeleteConfirmationDialogViewModel { DeletedObjectName = Category.Name };
@@ -110,13 +110,13 @@ public partial class EditCategoryViewModel : DialogViewModelBase, IDialogProvide
         Close();
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task UploadImage()
     {
-        (Category.UploadedImage, Category.UploadedImageName) = await _filesService.GetBitmap();
+        (Category.UploadedImage, Category.UploadedImageName) = await OpenFile.Handle(Unit.Default);
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public void DeleteImage()
     {
         Category.UploadedImage = null;

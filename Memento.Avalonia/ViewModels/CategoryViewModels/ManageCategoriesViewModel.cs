@@ -3,8 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Memento.Avalonia.Data;
 using Memento.Avalonia.Factories;
 using Memento.Avalonia.HttpClients;
@@ -13,15 +11,16 @@ using Memento.Avalonia.Options;
 using Memento.Avalonia.Services;
 using Memento.Avalonia.ViewModels.DialogViewModels;
 using Microsoft.Extensions.Options;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels.CategoryViewModels;
 
 public partial class ManageCategoriesViewModel : PageViewModel, IDialogProvider
 {
-    [ObservableProperty]
+    [Reactive]
     private ObservableCollection<CategoryViewModel> _categories = [];
 
-    [ObservableProperty]
+    [Reactive]
     private DialogViewModelBase? _dialogViewModel;
 
     private readonly ICategoryHttpClient _client;
@@ -65,7 +64,7 @@ public partial class ManageCategoriesViewModel : PageViewModel, IDialogProvider
         Categories = new ObservableCollection<CategoryViewModel>(result.Select(x => CategoryViewModel.FromDataModel(x, $"{_options.Value.Host}/{ApiPaths.CategoriesImagesPath}/{x.Image}")));
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task CreateCategoryAsync()
     {
         var viewModel = _categoryViewModelFactory.CreateCreateCategoryViewModel();
@@ -77,7 +76,7 @@ public partial class ManageCategoriesViewModel : PageViewModel, IDialogProvider
         }
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task EditCategoryAsync(CategoryViewModel cardViewModel)
     {
         var viewModel = _categoryViewModelFactory.CreateEditCategoryViewModel(cardViewModel);

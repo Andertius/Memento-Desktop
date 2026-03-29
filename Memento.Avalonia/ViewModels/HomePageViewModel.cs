@@ -1,10 +1,10 @@
-using CommunityToolkit.Mvvm.ComponentModel;
 using Memento.Avalonia.Data;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels;
 
 public partial class HomePageViewModel() : PageViewModel(ApplicationPageNames.HomePage)
 {
-    [ObservableProperty]
+    [Reactive]
     private string _test = "Home page view";
 }

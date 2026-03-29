@@ -3,23 +3,22 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Memento.Avalonia.Data;
 using Memento.Avalonia.Factories;
 using Memento.Avalonia.HttpClients;
 using Memento.Avalonia.Interfaces;
 using Memento.Avalonia.Services;
 using Memento.Avalonia.ViewModels.DialogViewModels;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels.TagViewModels;
 
 public partial class ManageTagsViewModel : PageViewModel, IDialogProvider
 {
-    [ObservableProperty]
+    [Reactive]
     private ObservableCollection<TagViewModel> _tags = [];
 
-    [ObservableProperty]
+    [Reactive]
     private DialogViewModelBase? _dialogViewModel;
 
     private readonly ITagHttpClient _client;
@@ -59,7 +58,7 @@ public partial class ManageTagsViewModel : PageViewModel, IDialogProvider
         Tags = new ObservableCollection<TagViewModel>(result.Select(TagViewModel.FromDataModel));
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task CreateTagAsync()
     {
         var viewModel = _tagViewModelFactory.CreateCreateTagViewModel();
@@ -71,7 +70,7 @@ public partial class ManageTagsViewModel : PageViewModel, IDialogProvider
         }
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task EditTagAsync(TagViewModel cardViewModel)
     {
         var viewModel = _tagViewModelFactory.CreateEditTagViewModel(cardViewModel);

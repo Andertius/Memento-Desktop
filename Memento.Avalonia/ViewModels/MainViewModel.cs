@@ -1,10 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Memento.Avalonia.Data;
 using Memento.Avalonia.Factories;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels;
 
@@ -12,10 +11,10 @@ public partial class MainViewModel : ViewModelBase
 {
     private readonly IPageViewModelFactory _pageViewModelFactory;
 
-    [ObservableProperty]
+    [Reactive]
     private string _username = "Spaghet";
 
-    [ObservableProperty]
+    [Reactive]
     private PageViewModel _currentPage;
 
     /// <summary>
@@ -29,16 +28,16 @@ public partial class MainViewModel : ViewModelBase
         }
 
         _pageViewModelFactory = null!;
-        _currentPage = new HomePageViewModel();
+        CurrentPage = new HomePageViewModel();
     }
 
     public MainViewModel(IPageViewModelFactory pageViewModelFactory)
     {
         _pageViewModelFactory = pageViewModelFactory;
-        _currentPage = _pageViewModelFactory.GetPageViewModel(ApplicationPageNames.HomePage);
+        CurrentPage = _pageViewModelFactory.GetPageViewModel(ApplicationPageNames.HomePage);
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task GoToPage(ApplicationPageNames pageName)
     {
         CurrentPage = _pageViewModelFactory.GetPageViewModel(pageName);

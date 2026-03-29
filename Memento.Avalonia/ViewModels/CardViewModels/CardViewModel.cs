@@ -1,67 +1,67 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
-using CommunityToolkit.Mvvm.ComponentModel;
 using Memento.Avalonia.DataModels;
 using Memento.Avalonia.Services;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels.CardViewModels;
 
 public partial class CardViewModel : ViewModelBase
 {
-    [ObservableProperty]
+    [Reactive]
     private int _id;
 
-    [ObservableProperty]
+    [Reactive]
     private string? _word;
 
-    [ObservableProperty]
+    [Reactive]
     private string? _translation;
 
-    [ObservableProperty]
+    [Reactive]
     private string? _definition;
 
-    [ObservableProperty]
+    [Reactive]
     private string? _hint;
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ImageBitmap))]
+    [Reactive]
     private string? _imageUrl;
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ImageBitmap))]
+    [Reactive]
     private Bitmap? _uploadedImage;
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(CombinedCategories))]
+    [Reactive]
     private ObservableCollection<Category> _categories = [];
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(CombinedTags))]
+    [Reactive]
     private ObservableCollection<Tag> _tags = [];
 
-    public string? UploadedImageName { get; set; }
+    [ObservableAsProperty]
+    public Task<Bitmap?> _imageBitmap = Task.FromResult<Bitmap?>(null);
 
-    public string CombinedCategories => String.Join(", ", Categories.Select(x => x.Name));
+    [ObservableAsProperty]
+    public string _combinedCategories = "";
 
-    public string CombinedTags => String.Join(", ", Tags.Select(x => x.Name));
-
-    public Task<Bitmap?> ImageBitmap
+    [ObservableAsProperty]
+    public string _combinedTags = "";
+    
+    public CardViewModel()
     {
-        get
-        {
-            if (UploadedImage is null)
-            {
-                return ImageUrl is null
-                    ? Task.FromResult<Bitmap?>(null)
-                    : ImageHelper.LoadFromServer(new Uri(ImageUrl));
-            }
-
-            return Task.FromResult<Bitmap?>(UploadedImage);
-        }
+        this.WhenAnyValue(x => x.UploadedImage, x => x.ImageUrl, CalculateImageBitmap)
+            .ToProperty(this, x => x.ImageBitmap, out _imageBitmapHelper);
+        
+        this.WhenAnyValue(x => x.Categories, CalculateCombinedCategories)
+            .ToProperty(this, x => x.CombinedTags, out _combinedCategoriesHelper);
+        
+        this.WhenAnyValue(x => x.Tags, CalculateCombinedTags)
+            .ToProperty(this, x => x.CombinedTags, out _combinedTagsHelper);
     }
+
+    public string? UploadedImageName { get; set; }
 
     public static CardViewModel FromDataModel(Card card, string? imageUrl = null) => new()
     {
@@ -85,4 +85,22 @@ public partial class CardViewModel : ViewModelBase
         Categories = Categories.ToList(),
         Tags = Tags.ToList(),
     };
+
+    private static Task<Bitmap?> CalculateImageBitmap(Bitmap? uploadedImage, string? imageUrl)
+    {
+        if (uploadedImage is null)
+        {
+            return imageUrl is null
+                ? Task.FromResult<Bitmap?>(null)
+                : ImageHelper.LoadFromServer(new Uri(imageUrl));
+        }
+
+        return Task.FromResult<Bitmap?>(uploadedImage);
+    }
+    
+    private static string CalculateCombinedCategories(IEnumerable<Category> categories)
+        => String.Join(", ", categories.Select(x => x.Name));
+
+    private static string CalculateCombinedTags(IEnumerable<Tag> tags)
+        => String.Join(", ", tags.Select(x => x.Name));
 }

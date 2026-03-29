@@ -1,8 +1,9 @@
-using Avalonia.Controls;
+using Memento.Avalonia.ViewModels.TagViewModels;
+using ReactiveUI.Avalonia;
 
 namespace Memento.Avalonia.Views.TagViews;
 
-public partial class CreateTagView : UserControl
+public partial class CreateTagView : ReactiveUserControl<CreateTagViewModel>
 {
     public CreateTagView()
     {

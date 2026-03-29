@@ -1,15 +1,16 @@
 using System;
 using System.IO;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Memento.Avalonia.Data;
 using Memento.Avalonia.HttpClients;
 using Memento.Avalonia.Options;
-using Memento.Avalonia.Services;
 using Memento.Avalonia.ViewModels.DialogViewModels;
 using Microsoft.Extensions.Options;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels.CategoryViewModels;
 
@@ -17,11 +18,10 @@ public partial class CreateCategoryViewModel : DialogViewModelBase
 {
     private readonly ApiClientOptions _options;
 
-    [ObservableProperty]
+    [Reactive]
     private CategoryViewModel _category = new();
 
     private readonly ICategoryHttpClient _client;
-    private readonly IFilesService _filesService;
 
     /// <summary>
     /// Design-time only constructor
@@ -34,21 +34,20 @@ public partial class CreateCategoryViewModel : DialogViewModelBase
         }
 
         _client = null!;
-        _filesService = null!;
         _options = null!;
     }
 
     public CreateCategoryViewModel(
         ICategoryHttpClient client,
-        IFilesService filesService,
         IOptions<ApiClientOptions> options)
     {
         _client = client;
-        _filesService = filesService;
         _options = options.Value;
     }
 
-    [RelayCommand]
+    public Interaction<Unit, ImageData> OpenFile { get; } = new();
+
+    [ReactiveCommand]
     public async Task SaveCategoryAsync()
     {
         var category = Category.ToDataModel();
@@ -69,20 +68,20 @@ public partial class CreateCategoryViewModel : DialogViewModelBase
         Close();
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public void Cancel()
     {
         Category.UploadedImage = null;
         Close();
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task UploadImageAsync()
     {
-        (Category.UploadedImage, Category.UploadedImageName) = await _filesService.GetBitmap();
+        (Category.UploadedImage, Category.UploadedImageName) = await OpenFile.Handle(Unit.Default);
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public void DeleteImage()
     {
         Category.UploadedImage = null;

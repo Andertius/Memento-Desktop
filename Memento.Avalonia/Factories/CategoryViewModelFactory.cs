@@ -16,12 +16,11 @@ public interface ICategoryViewModelFactory
 public sealed class CategoryViewModelFactory(
     ICategoryHttpClient _client,
     IDialogService _dialogService,
-    IFilesService _filesService,
     IOptions<ApiClientOptions> _options) : ICategoryViewModelFactory
 {
     public CreateCategoryViewModel CreateCreateCategoryViewModel()
-        => new(_client, _filesService, _options);
+        => new(_client, _options);
 
     public EditCategoryViewModel CreateEditCategoryViewModel(CategoryViewModel categoryViewModel)
-        => new(_client, _filesService, _dialogService, _options, categoryViewModel);
+        => new(_client, _dialogService, _options, categoryViewModel);
 }

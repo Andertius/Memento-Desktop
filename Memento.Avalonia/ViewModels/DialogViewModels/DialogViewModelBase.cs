@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels.DialogViewModels;
 
 public abstract partial class DialogViewModelBase : ViewModelBase
 {
-    [ObservableProperty]
+    [Reactive]
     private bool _isDialogOpen;
 
     protected TaskCompletionSource _closeTask = new();

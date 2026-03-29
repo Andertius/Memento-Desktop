@@ -3,8 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Memento.Avalonia.Data;
 using Memento.Avalonia.Factories;
 using Memento.Avalonia.HttpClients;
@@ -13,15 +11,16 @@ using Memento.Avalonia.Options;
 using Memento.Avalonia.Services;
 using Memento.Avalonia.ViewModels.DialogViewModels;
 using Microsoft.Extensions.Options;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels.CardViewModels;
 
 public partial class ManageCardsViewModel : PageViewModel, IDialogProvider
 {
-    [ObservableProperty]
+    [Reactive]
     private ObservableCollection<CardViewModel> _cards = [];
 
-    [ObservableProperty]
+    [Reactive]
     private DialogViewModelBase? _dialogViewModel;
 
     private readonly ICardHttpClient _client;
@@ -65,7 +64,7 @@ public partial class ManageCardsViewModel : PageViewModel, IDialogProvider
         Cards = new ObservableCollection<CardViewModel>(result.Select(x => CardViewModel.FromDataModel(x, $"{_options.Value.Host}/{ApiPaths.CardsImagesPath}/{x.Image}")));
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task CreateCardAsync()
     {
         var viewModel = _cardViewModelFactory.CreateCreateCardViewModel();
@@ -77,7 +76,7 @@ public partial class ManageCardsViewModel : PageViewModel, IDialogProvider
         }
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task EditCard(CardViewModel cardViewModel)
     {
         var viewModel = _cardViewModelFactory.CreateEditCardViewModel(cardViewModel);

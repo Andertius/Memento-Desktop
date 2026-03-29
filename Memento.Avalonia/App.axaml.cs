@@ -1,22 +1,16 @@
-using System;
 using System.Linq;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Memento.Avalonia.Extensions;
 using Memento.Avalonia.ViewModels;
 using Memento.Avalonia.Views;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Splat;
 
 namespace Memento.Avalonia;
 
 public partial class App : Application
 {
-    private const string _environmentName = "Development";
-
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -30,12 +24,10 @@ public partial class App : Application
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
 
-            desktop.MainWindow = new MainView();
-
-            var configuration = BuildConfiguration();
-            var serviceProvider = ConfigureServices(configuration, desktop.MainWindow);
-
-            desktop.MainWindow.DataContext = serviceProvider.GetRequiredService<MainViewModel>();
+            desktop.MainWindow = new MainView
+            {
+                DataContext = AppLocator.Current.GetService<MainViewModel>(),
+            };
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -52,28 +44,5 @@ public partial class App : Application
         {
             BindingPlugins.DataValidators.Remove(plugin);
         }
-    }
-
-    private static IConfiguration BuildConfiguration()
-    {
-        var config = new ConfigurationBuilder()
-            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .AddJsonFile("appsettings.json")
-            .AddJsonFile($"appsettings.{_environmentName}.json")
-            .Build();
-
-        return config;
-    }
-
-    private static ServiceProvider ConfigureServices(IConfiguration configuration, Window mainWindow)
-    {
-        var services = new ServiceCollection();
-        services.AddViewModels();
-        services.AddFactories();
-        services.AddClients();
-        services.AddServices(mainWindow);
-        services.AddOptions(configuration);
-
-        return services.BuildServiceProvider();
     }
 }

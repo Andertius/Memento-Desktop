@@ -1,14 +1,14 @@
-using CommunityToolkit.Mvvm.ComponentModel;
 using Memento.Avalonia.DataModels;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels.TagViewModels;
 
 public partial class TagViewModel : ViewModelBase
 {
-    [ObservableProperty]
+    [Reactive]
     private int _id;
 
-    [ObservableProperty]
+    [Reactive]
     private string? _name;
 
     public static TagViewModel FromDataModel(Tag tag) => new()

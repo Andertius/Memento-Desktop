@@ -1,12 +1,12 @@
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
 using Memento.Avalonia.Data;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels;
 
 public partial class LearnViewModel() : PageViewModel(ApplicationPageNames.Learn)
 {
-    [ObservableProperty]
+    [Reactive]
     private string _test = "Learn view";
 
     public override async Task OnPageSelected()

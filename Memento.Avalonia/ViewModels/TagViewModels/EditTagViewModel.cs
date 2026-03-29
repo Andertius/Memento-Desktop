@@ -1,12 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Memento.Avalonia.HttpClients;
 using Memento.Avalonia.Interfaces;
 using Memento.Avalonia.Services;
 using Memento.Avalonia.ViewModels.DialogViewModels;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels.TagViewModels;
 
@@ -15,10 +14,10 @@ public partial class EditTagViewModel : DialogViewModelBase, IDialogProvider
     private readonly ITagHttpClient _client;
     private readonly IDialogService _dialogService;
 
-    [ObservableProperty]
+    [Reactive]
     private TagViewModel _tag;
 
-    [ObservableProperty]
+    [Reactive]
     private DialogViewModelBase? _dialogViewModel;
 
     /// <summary>
@@ -48,21 +47,21 @@ public partial class EditTagViewModel : DialogViewModelBase, IDialogProvider
 
     public bool Deleted { get; private set; }
 
-    [RelayCommand]
-    public async Task SaveTag()
+    [ReactiveCommand]
+    public async Task SaveTagAsync()
     {
         await _client.UpdateTag(Tag.ToDataModel());
         Close();
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public void Cancel()
     {
         Close();
     }
 
-    [RelayCommand]
-    public async Task DeleteTag()
+    [ReactiveCommand]
+    public async Task DeleteTagAsync()
     {
         var confirmViewModel = new DeleteConfirmationDialogViewModel { DeletedObjectName = Tag.Name };
         await _dialogService.ShowDialogAsync(this, confirmViewModel);

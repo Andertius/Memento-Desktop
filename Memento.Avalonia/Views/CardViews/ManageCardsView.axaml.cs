@@ -1,8 +1,9 @@
-using Avalonia.Controls;
+using Memento.Avalonia.ViewModels.CardViewModels;
+using ReactiveUI.Avalonia;
 
 namespace Memento.Avalonia.Views.CardViews;
 
-public partial class ManageCardsView : UserControl
+public partial class ManageCardsView : ReactiveUserControl<ManageCardsViewModel>
 {
     public ManageCardsView()
     {

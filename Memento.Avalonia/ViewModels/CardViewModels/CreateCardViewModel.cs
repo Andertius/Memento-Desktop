@@ -1,15 +1,16 @@
 using System;
 using System.IO;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Memento.Avalonia.Data;
 using Memento.Avalonia.HttpClients;
 using Memento.Avalonia.Options;
-using Memento.Avalonia.Services;
 using Memento.Avalonia.ViewModels.DialogViewModels;
 using Microsoft.Extensions.Options;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels.CardViewModels;
 
@@ -17,11 +18,10 @@ public partial class CreateCardViewModel : DialogViewModelBase
 {
     private readonly ApiClientOptions _options;
 
-    [ObservableProperty]
+    [Reactive]
     private CardViewModel _card = new();
 
     private readonly ICardHttpClient _client;
-    private readonly IFilesService _filesService;
 
     /// <summary>
     /// Design-time only constructor
@@ -34,21 +34,20 @@ public partial class CreateCardViewModel : DialogViewModelBase
         }
 
         _client = null!;
-        _filesService = null!;
         _options = null!;
     }
 
     public CreateCardViewModel(
         ICardHttpClient client,
-        IFilesService filesService,
         IOptions<ApiClientOptions> options)
     {
         _client = client;
-        _filesService = filesService;
         _options = options.Value;
     }
 
-    [RelayCommand]
+    public Interaction<Unit, ImageData> OpenFile { get; } = new();
+
+    [ReactiveCommand]
     public async Task SaveCardAsync()
     {
         var card = Card.ToDataModel();
@@ -69,20 +68,20 @@ public partial class CreateCardViewModel : DialogViewModelBase
         Close();
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public void Cancel()
     {
         Card.UploadedImage = null;
         Close();
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public async Task UploadImageAsync()
     {
-        (Card.UploadedImage, Card.UploadedImageName) = await _filesService.GetBitmap();
+        (Card.UploadedImage, Card.UploadedImageName) = await OpenFile.Handle(Unit.Default);
     }
 
-    [RelayCommand]
+    [ReactiveCommand]
     public void DeleteImage()
     {
         Card.UploadedImage = null;

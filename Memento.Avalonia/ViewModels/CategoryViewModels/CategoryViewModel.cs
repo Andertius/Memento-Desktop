@@ -1,55 +1,52 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
-using CommunityToolkit.Mvvm.ComponentModel;
 using Memento.Avalonia.DataModels;
 using Memento.Avalonia.Services;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 
 namespace Memento.Avalonia.ViewModels.CategoryViewModels;
 
 public partial class CategoryViewModel : ViewModelBase
 {
-    [ObservableProperty]
+    [Reactive]
     private int _id;
 
-    [ObservableProperty]
+    [Reactive]
     private string? _name;
 
-    [ObservableProperty]
+    [Reactive]
     private string? _description;
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ImageBitmap))]
+    [Reactive]
     private string? _imageUrl;
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ImageBitmap))]
+    [Reactive]
     private Bitmap? _uploadedImage;
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(CombinedTags))]
+    [Reactive]
     private ObservableCollection<Tag> _tags = [];
+
+    [ObservableAsProperty]
+    public Task<Bitmap?> _imageBitmap = Task.FromResult<Bitmap?>(null);
+
+    [ObservableAsProperty]
+    public string _combinedTags = "";
     
-    public string? UploadedImageName { get; set; }
-
-    public string CombinedTags => String.Join(", ", Tags.Select(x => x.Name));
-
-    public Task<Bitmap?> ImageBitmap
+    public CategoryViewModel()
     {
-        get
-        {
-            if (UploadedImage is null)
-            {
-                return ImageUrl is null
-                    ? Task.FromResult<Bitmap?>(null)
-                    : ImageHelper.LoadFromServer(new Uri(ImageUrl));
-            }
-
-            return Task.FromResult<Bitmap?>(UploadedImage);
-        }
+        this.WhenAnyValue(x => x.UploadedImage, x => x.ImageUrl, CalculateImageBitmap)
+            .ToProperty(this, x => x.ImageBitmap, out _imageBitmapHelper);
+        
+        this.WhenAnyValue(x => x.Tags, CalculateCombinedTags)
+            .ToProperty(this, x => x.CombinedTags, out _combinedTagsHelper);
     }
+
+    public string? UploadedImageName { get; set; }
 
     public static CategoryViewModel FromDataModel(Category category, string? imageUrl = null) => new()
     {
@@ -67,4 +64,19 @@ public partial class CategoryViewModel : ViewModelBase
         Description = Description,
         Tags = Tags.ToList(),
     };
+
+    private static Task<Bitmap?> CalculateImageBitmap(Bitmap? uploadedImage, string? imageUrl)
+    {
+        if (uploadedImage is null)
+        {
+            return imageUrl is null
+                ? Task.FromResult<Bitmap?>(null)
+                : ImageHelper.LoadFromServer(new Uri(imageUrl));
+        }
+
+        return Task.FromResult<Bitmap?>(uploadedImage);
+    }
+    
+    private static string CalculateCombinedTags(IEnumerable<Tag> tags)
+        => String.Join(", ", tags.Select(x => x.Name));
 }

@@ -1,40 +1,37 @@
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
+using Memento.Avalonia.Data;
 
-namespace Memento.Avalonia.Services;
+namespace Memento.Avalonia.Handlers;
 
-public interface IFilesService
+public static class FileHandler
 {
-    Task<(Bitmap?, string?)> GetBitmap();
-}
-
-public sealed class FilesService(Window _traget) : IFilesService
-{
-    public async Task<(Bitmap?, string?)> GetBitmap()
+    public static async Task<ImageData> OpenImage(Visual target)
     {
-        var topLevel = TopLevel.GetTopLevel(_traget);
+        var topLevel = TopLevel.GetTopLevel(target);
 
         if (topLevel is null)
         {
-            return (null, null);
+            return new ImageData(null, null);
         }
 
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "Choose a png file",
+            Title = "Choose an image file",
             AllowMultiple = false,
             FileTypeFilter = [FilePickerFileTypes.ImageAll],
         });
 
         if (files.Count == 0)
         {
-            return (null, null);
+            return new ImageData(null, null);
         }
 
         var stream = await files[0].OpenReadAsync();
 
-        return (new Bitmap(stream), files[0].Name);
+        return new ImageData(new Bitmap(stream), files[0].Name);
     }
 }
