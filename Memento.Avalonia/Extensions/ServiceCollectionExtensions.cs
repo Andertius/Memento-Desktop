@@ -1,17 +1,20 @@
 using System;
-using Avalonia.Controls;
-using Memento.Avalonia.Data;
-using Memento.Avalonia.Factories;
-using Memento.Avalonia.HttpClients;
-using Memento.Avalonia.Options;
-using Memento.Avalonia.Services;
-using Memento.Avalonia.ViewModels;
-using Memento.Avalonia.ViewModels.CardViewModels;
-using Memento.Avalonia.ViewModels.CategoryViewModels;
-using Memento.Avalonia.ViewModels.TagViewModels;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Memento.Core.Data;
+using Memento.Core.Factories;
+using Memento.Core.HttpClients;
+using Memento.Core.Options;
+using Memento.Core.Services;
+using Memento.Core.ViewModels;
+using Memento.Core.ViewModels.CardViewModels;
+using Memento.Core.ViewModels.CategoryViewModels;
+using Memento.Core.ViewModels.TagViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using ReactiveUI;
 
 namespace Memento.Avalonia.Extensions;
 
@@ -19,6 +22,25 @@ public static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
+        public IServiceCollection AddViews()
+        {
+            var openGenericType = typeof(IViewFor<>);
+            var types = Assembly.GetExecutingAssembly().GetTypes();
+
+            IEnumerable<(Type ServiceType, Type ServiceImplementation)> query = from type in types
+                where !type.IsAbstract && !type.IsGenericTypeDefinition
+                let matchingInterface = type.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == openGenericType)
+                where matchingInterface is not null
+                select (matchingInterface, type);
+
+            foreach (var result in query)
+            {
+                services.AddTransient(result.ServiceType, result.ServiceImplementation);
+            }
+
+            return services;
+        }
+
         public IServiceCollection AddViewModels()
         {
             services.AddSingleton<MainViewModel>();

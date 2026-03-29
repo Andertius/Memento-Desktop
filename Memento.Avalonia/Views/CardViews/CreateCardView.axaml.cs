@@ -1,6 +1,6 @@
 using System.Reactive.Disposables.Fluent;
 using Memento.Avalonia.Handlers;
-using Memento.Avalonia.ViewModels.CardViewModels;
+using Memento.Core.ViewModels.CardViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -13,10 +13,12 @@ public partial class CreateCardView : ReactiveUserControl<CreateCardViewModel>
         InitializeComponent();
 
         this.WhenActivated(disposables =>
+        {
             ViewModel!.OpenFile.RegisterHandler(async context =>
             {
                 var result = await FileHandler.OpenImage(this);
                 context.SetOutput(result);
-            }).DisposeWith(disposables));
+            }).DisposeWith(disposables);
+        });
     }
 }

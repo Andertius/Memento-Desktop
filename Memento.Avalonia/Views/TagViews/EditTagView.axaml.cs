@@ -1,4 +1,4 @@
-using Memento.Avalonia.ViewModels.TagViewModels;
+using Memento.Core.ViewModels.TagViewModels;
 using ReactiveUI.Avalonia;
 
 namespace Memento.Avalonia.Views.TagViews;

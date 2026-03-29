@@ -1,6 +1,6 @@
 using System.Reactive.Disposables.Fluent;
 using Memento.Avalonia.Handlers;
-using Memento.Avalonia.ViewModels.CardViewModels;
+using Memento.Core.ViewModels.CardViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 

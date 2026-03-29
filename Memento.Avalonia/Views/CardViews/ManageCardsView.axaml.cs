@@ -1,4 +1,4 @@
-using Memento.Avalonia.ViewModels.CardViewModels;
+using Memento.Core.ViewModels.CardViewModels;
 using ReactiveUI.Avalonia;
 
 namespace Memento.Avalonia.Views.CardViews;

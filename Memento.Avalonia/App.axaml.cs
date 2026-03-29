@@ -3,8 +3,8 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Memento.Avalonia.ViewModels;
 using Memento.Avalonia.Views;
+using Memento.Core.ViewModels;
 using Splat;
 
 namespace Memento.Avalonia;

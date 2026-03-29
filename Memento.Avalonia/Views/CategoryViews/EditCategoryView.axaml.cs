@@ -1,6 +1,6 @@
 using System.Reactive.Disposables.Fluent;
 using Memento.Avalonia.Handlers;
-using Memento.Avalonia.ViewModels.CategoryViewModels;
+using Memento.Core.ViewModels.CategoryViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 

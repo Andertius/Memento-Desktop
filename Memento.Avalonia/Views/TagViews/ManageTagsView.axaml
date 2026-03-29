@@ -3,15 +3,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             xmlns:vm="clr-namespace:Memento.Avalonia.ViewModels.TagViewModels"
+             xmlns:vm="clr-namespace:Memento.Core.ViewModels.TagViewModels;assembly=Memento.Core"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              Background="{DynamicResource PrimaryBackground}"
              x:Class="Memento.Avalonia.Views.TagViews.ManageTagsView"
              x:DataType="vm:ManageTagsViewModel"
              x:Name="CategoryList">
-    
+
     <Design.DataContext>
-        <vm:ManageTagsViewModel/>
+        <vm:ManageTagsViewModel />
     </Design.DataContext>
 
     <Grid>
@@ -65,7 +65,7 @@
 
             <ContentControl Content="{Binding DialogViewModel}"
                             HorizontalAlignment="Center"
-                            VerticalAlignment="Center"/>
+                            VerticalAlignment="Center" />
         </Grid>
     </Grid>
 </UserControl>

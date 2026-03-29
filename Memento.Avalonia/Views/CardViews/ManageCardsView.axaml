@@ -3,13 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             xmlns:vm="clr-namespace:Memento.Avalonia.ViewModels.CardViewModels"
+             xmlns:vm="clr-namespace:Memento.Core.ViewModels.CardViewModels;assembly=Memento.Core"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              Background="{DynamicResource PrimaryBackground}"
              x:Class="Memento.Avalonia.Views.CardViews.ManageCardsView"
              x:DataType="vm:ManageCardsViewModel"
              x:Name="CardsList">
-    
+
     <Design.DataContext>
         <vm:ManageCardsViewModel />
     </Design.DataContext>
@@ -19,16 +20,16 @@
             <Grid RowDefinitions="75 *" RowSpacing="20">
                 <StackPanel Grid.Row="0">
                     <TextBlock Text="Card Management" FontSize="26" HorizontalAlignment="Center" />
-                    
+
                     <StackPanel Orientation="Horizontal">
                         <Button HorizontalAlignment="Left" Classes="add-item-button" Command="{Binding CreateCardCommand}">
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <materialIcons:MaterialIcon Kind="Plus" />
-                            
+
                                 <TextBlock Text="Add" FontSize="18" />
                             </StackPanel>
                         </Button>
-                        
+
                         <!-- <TextBox HorizontalAlignment="Right" /> -->
                     </StackPanel>
                 </StackPanel>
@@ -56,9 +57,9 @@
                                             <Rectangle Fill="{DynamicResource ImageBackdrop}" />
 
                                             <Image Margin="20"
-                                                   MaxHeight="275"
-                                                   MaxWidth="275"
-                                                   Source="{Binding ImageBitmap^}"/>
+                                                   MaxHeight="350"
+                                                   MaxWidth="350"
+                                                   asyncImageLoader:ImageLoader.Source="{Binding ImageUrl}" />
                                         </Panel>
 
                                         <TextBlock Text="{Binding Word}" HorizontalAlignment="Center" FontSize="22" />
@@ -78,7 +79,7 @@
 
             <ContentControl Content="{Binding DialogViewModel}"
                             HorizontalAlignment="Center"
-                            VerticalAlignment="Center"/>
+                            VerticalAlignment="Center" />
         </Grid>
     </Grid>
 </UserControl>

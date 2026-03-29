@@ -2,7 +2,6 @@
 using Avalonia;
 using Memento.Avalonia.Extensions;
 using Microsoft.Extensions.Configuration;
-using ReactiveUI.Avalonia;
 using ReactiveUI.Avalonia.Splat;
 
 namespace Memento.Avalonia;
@@ -22,19 +21,18 @@ public sealed class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .RegisterReactiveUIViewsFromEntryAssembly()
-            .UseReactiveUIWithMicrosoftDependencyResolver(
-                services =>
-                {
-                    services.AddViewModels();
-                    services.AddFactories();
-                    services.AddClients();
-                    services.AddServices();
-                    services.AddOptions(BuildConfiguration());
-                })
+            .UseReactiveUIWithMicrosoftDependencyResolver(services =>
+            {
+                services.AddViews();
+                services.AddViewModels();
+                services.AddFactories();
+                services.AddClients();
+                services.AddServices();
+                services.AddOptions(BuildConfiguration());
+            })
             .WithInterFont()
             .LogToTrace();
-    
+
     private static IConfiguration BuildConfiguration()
     {
         var config = new ConfigurationBuilder()

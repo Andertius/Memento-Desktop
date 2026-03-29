@@ -1,4 +1,4 @@
-using Memento.Avalonia.ViewModels;
+using Memento.Core.ViewModels;
 using ReactiveUI.Avalonia;
 
 namespace Memento.Avalonia.Views;

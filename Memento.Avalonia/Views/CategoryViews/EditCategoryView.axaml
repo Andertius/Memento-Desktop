@@ -3,7 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             xmlns:vm="clr-namespace:Memento.Avalonia.ViewModels.CategoryViewModels"
+             xmlns:vm="clr-namespace:Memento.Core.ViewModels.CategoryViewModels;assembly=Memento.Core"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
              Background="{DynamicResource PrimaryBackground}"
              x:Class="Memento.Avalonia.Views.CategoryViews.EditCategoryView"
@@ -40,19 +41,19 @@
                         <Image Margin="20"
                                MaxHeight="350"
                                MaxWidth="350"
-                               Source="{Binding Category.ImageBitmap^}" />
+                               asyncImageLoader:ImageLoader.Source="{Binding Category.ImageUrl}" />
                     </Panel>
 
                     <Grid ColumnDefinitions="* *">
                         <Button Grid.Column="0"
                                 Content="Upload new image"
                                 Command="{Binding UploadImageCommand}"
-                                HorizontalAlignment="Left"/>
+                                HorizontalAlignment="Left" />
 
                         <Button Grid.Column="1"
                                 Content="Delete image"
                                 Command="{Binding DeleteImageCommand}"
-                                HorizontalAlignment="Right"/>
+                                HorizontalAlignment="Right" />
                     </Grid>
                 </StackPanel>
 
@@ -67,7 +68,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Grid.Column="0">
-                    <Label Content="Tags" Target="TagsComboBox"/>
+                    <Label Content="Tags" Target="TagsComboBox" />
                     <TextBox Text="{Binding Category.Name}" x:Name="TagsComboBox" />
                 </StackPanel>
 
@@ -96,7 +97,7 @@
 
             <ContentControl Content="{Binding DialogViewModel}"
                             HorizontalAlignment="Center"
-                            VerticalAlignment="Center"/>
+                            VerticalAlignment="Center" />
         </Grid>
     </Grid>
 </UserControl>

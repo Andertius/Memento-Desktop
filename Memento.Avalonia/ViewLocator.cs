@@ -1,12 +1,15 @@
-using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Memento.Avalonia.ViewModels;
+using Memento.Core.ViewModels;
+using ReactiveUI;
+using Splat;
 
 namespace Memento.Avalonia;
 
 public sealed class ViewLocator : IDataTemplate
 {
+    public static bool SupportsRecycling => false;
+
     public Control? Build(object? data)
     {
         if (data is null)
@@ -14,18 +17,9 @@ public sealed class ViewLocator : IDataTemplate
             return null;
         }
 
-        string viewName = data.GetType().FullName!.Replace("ViewModel", "View", StringComparison.InvariantCulture);
-        var type = Type.GetType(viewName);
+        object? view = AppLocator.Current.GetService(typeof(IViewFor<>).MakeGenericType(data.GetType()));
 
-        if (type is null)
-        {
-            return null;
-        }
-
-        var control = (Control)Activator.CreateInstance(type)!;
-        control.DataContext = data;
-
-        return control;
+        return view as Control ?? new TextBlock { Text = "Not Found: " + view?.GetType().FullName };
     }
 
     public bool Match(object? data)

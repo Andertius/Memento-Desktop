@@ -3,8 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-        xmlns:vm="clr-namespace:Memento.Avalonia.ViewModels"
-        xmlns:data="clr-namespace:Memento.Avalonia.Data"
+        xmlns:vm="clr-namespace:Memento.Core.ViewModels;assembly=Memento.Core"
+        xmlns:data="clr-namespace:Memento.Core.Data;assembly=Memento.Core"
         xmlns:converters="clr-namespace:Memento.Avalonia.Converters"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Memento.Avalonia.Views.MainView"
@@ -17,7 +17,7 @@
     </Design.DataContext>
 
     <Window.Resources>
-        <converters:ActivePageConverter x:Key="ActivePageConverter"/>
+        <converters:ActivePageConverter x:Key="ActivePageConverter" />
     </Window.Resources>
 
     <Grid Background="{DynamicResource PrimaryBackground}" ColumnDefinitions="300, *">
@@ -30,31 +30,31 @@
                             Classes.active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.HomePage}}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{x:Static data:ApplicationPageNames.HomePage}"/>
+                            CommandParameter="{x:Static data:ApplicationPageNames.HomePage}" />
 
                     <Button Content="Learn"
                             Classes.active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.Learn}}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{x:Static data:ApplicationPageNames.Learn}"/>
+                            CommandParameter="{x:Static data:ApplicationPageNames.Learn}" />
 
                     <Button Content="Manage Cards"
                             Classes.active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.ManageCards}}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{x:Static data:ApplicationPageNames.ManageCards}"/>
+                            CommandParameter="{x:Static data:ApplicationPageNames.ManageCards}" />
 
                     <Button Content="Manage Categories"
                             Classes.active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.ManageCategories}}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{x:Static data:ApplicationPageNames.ManageCategories}"/>
+                            CommandParameter="{x:Static data:ApplicationPageNames.ManageCategories}" />
 
                     <Button Content="Manage Tags"
                             Classes.active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.ManageTags}}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{x:Static data:ApplicationPageNames.ManageTags}"/>
+                            CommandParameter="{x:Static data:ApplicationPageNames.ManageTags}" />
                 </StackPanel>
 
                 <Grid Grid.Row="1" ColumnDefinitions="* Auto Auto">
@@ -81,6 +81,5 @@
         </Border>
 
         <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" />
-        <!-- <ContentControl Grid.Column="1"><views:ManageTagsView/></ContentControl> -->
     </Grid>
 </Window>

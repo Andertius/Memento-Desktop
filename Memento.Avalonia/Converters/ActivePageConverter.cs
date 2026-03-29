@@ -2,8 +2,8 @@ using System;
 using System.Globalization;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
-using Memento.Avalonia.Data;
-using Memento.Avalonia.ViewModels;
+using Memento.Core.Data;
+using Memento.Core.ViewModels;
 
 namespace Memento.Avalonia.Converters;
 

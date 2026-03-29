@@ -1,4 +1,4 @@
-using Memento.Avalonia.ViewModels.DialogViewModels;
+using Memento.Core.ViewModels.DialogViewModels;
 using ReactiveUI.Avalonia;
 
 namespace Memento.Avalonia.Views.DialogViews;

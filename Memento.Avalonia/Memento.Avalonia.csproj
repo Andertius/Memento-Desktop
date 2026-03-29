@@ -8,68 +8,74 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**" />
+        <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.3.12" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.12" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.12" />
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.12" />
+        <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.7.0"/>
+        <PackageReference Include="Avalonia" Version="11.3.13"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.13"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.13"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.13"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.12">
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.13">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Material.Icons.Avalonia" Version="3.0.1-nightly.0.4" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.5" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.5" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.5" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.5" />
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.5" />
-        <PackageReference Include="ReactiveUI" Version="23.1.8" />
-        <PackageReference Include="ReactiveUI.Avalonia" Version="11.4.12" />
-        <PackageReference Include="ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection" Version="11.4.12" />
+        <PackageReference Include="Material.Icons.Avalonia" Version="3.0.1-nightly.0.4"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.5"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.5"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.5"/>
+        <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.5"/>
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.5"/>
+        <PackageReference Include="ReactiveUI" Version="23.1.8"/>
+        <PackageReference Include="ReactiveUI.Avalonia" Version="11.4.12"/>
+        <PackageReference Include="ReactiveUI.Avalonia.Microsoft.Extensions.DependencyInjection" Version="11.4.12"/>
         <PackageReference Include="ReactiveUI.SourceGenerators" Version="2.6.1">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="11.3.9.5" />
+        <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="11.3.9.5"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\MainView.axaml.cs">
-        <DependentUpon>MainView.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\CardViews\ManageCardsView.axaml.cs">
-        <DependentUpon>ManageCardsView.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\CategoryViews\ManageCategoriesView.axaml.cs">
-        <DependentUpon>ManageCategoriesView.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\TagViews\CreateTagView.axaml.cs">
-        <DependentUpon>CreateCategoryView.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\TagViews\EditTagView.axaml.cs">
-        <DependentUpon>EditCategoryView.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\TagViews\ManageTagsView.axaml.cs">
-        <DependentUpon>ManageCategoriesView.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
+        <Compile Update="Views\MainView.axaml.cs">
+            <DependentUpon>MainView.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\CardViews\ManageCardsView.axaml.cs">
+            <DependentUpon>ManageCardsView.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\CategoryViews\ManageCategoriesView.axaml.cs">
+            <DependentUpon>ManageCategoriesView.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\TagViews\CreateTagView.axaml.cs">
+            <DependentUpon>CreateCategoryView.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\TagViews\EditTagView.axaml.cs">
+            <DependentUpon>EditCategoryView.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\TagViews\ManageTagsView.axaml.cs">
+            <DependentUpon>ManageCategoriesView.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="appsettings.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="appsettings.Development.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="appsettings.Development.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Memento.Core\Memento.Core.csproj"/>
+    </ItemGroup>
+
 </Project>

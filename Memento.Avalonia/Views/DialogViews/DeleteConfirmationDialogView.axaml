@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
              Width="400" Height="200"
-             xmlns:vm="clr-namespace:Memento.Avalonia.ViewModels.DialogViewModels"
+             xmlns:vm="clr-namespace:Memento.Core.ViewModels.DialogViewModels;assembly=Memento.Core"
              Background="{DynamicResource PrimaryBackground}"
              x:Class="Memento.Avalonia.Views.DialogViews.DeleteConfirmationDialogView"
              x:DataType="vm:DeleteConfirmationDialogViewModel">
@@ -12,13 +12,13 @@
     <Design.DataContext>
         <vm:DeleteConfirmationDialogViewModel />
     </Design.DataContext>
-    
+
     <Border Padding="50">
         <Grid RowDefinitions="* Auto">
             <TextBlock Grid.Row="0"
                        Text="{Binding Message}"
                        FontSize="20"
-                       TextWrapping="Wrap"/>
+                       TextWrapping="Wrap" />
 
             <StackPanel Grid.Row="1"
                         HorizontalAlignment="Right"

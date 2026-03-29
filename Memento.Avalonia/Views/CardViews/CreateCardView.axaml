@@ -2,7 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:Memento.Avalonia.ViewModels.CardViewModels"
+             xmlns:vm="clr-namespace:Memento.Core.ViewModels.CardViewModels;assembly=Memento.Core"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
              Background="{DynamicResource PrimaryBackground}"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
              x:Class="Memento.Avalonia.Views.CardViews.CreateCardView"
@@ -37,19 +38,19 @@
                     <Image Margin="20"
                            MaxHeight="350"
                            MaxWidth="350"
-                           Source="{Binding Card.ImageBitmap^}" />
+                           asyncImageLoader:ImageLoader.Source="{Binding Card.ImageUrl}" />
                 </Panel>
 
                 <Grid ColumnDefinitions="* *">
                     <Button Grid.Column="0"
                             Content="Upload new image"
                             Command="{Binding UploadImageCommand}"
-                            HorizontalAlignment="Left"/>
+                            HorizontalAlignment="Left" />
 
                     <Button Grid.Column="1"
                             Content="Delete image"
                             Command="{Binding DeleteImageCommand}"
-                            HorizontalAlignment="Right"/>
+                            HorizontalAlignment="Right" />
                 </Grid>
             </StackPanel>
 

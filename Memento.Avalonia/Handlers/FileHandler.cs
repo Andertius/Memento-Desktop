@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
-using Memento.Avalonia.Data;
+using Memento.Core.Data;
 
 namespace Memento.Avalonia.Handlers;
 
@@ -32,6 +31,6 @@ public static class FileHandler
 
         var stream = await files[0].OpenReadAsync();
 
-        return new ImageData(new Bitmap(stream), files[0].Name);
+        return new ImageData(stream, files[0].Path);
     }
 }
