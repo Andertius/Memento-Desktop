@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Memento.Core.Data;
 using Memento.Core.DataModels;
@@ -33,10 +32,10 @@ public partial class CardViewModel : ViewModelBase
     private ImageData? _uploadedImageData;
 
     [Reactive]
-    private ObservableCollection<Category> _categories = [];
+    private IReadOnlyCollection<Category> _categories = [];
 
     [Reactive]
-    private ObservableCollection<Tag> _tags = [];
+    private IReadOnlyCollection<Tag> _tags = [];
 
     [ObservableAsProperty]
     public string _combinedCategories = "";
@@ -46,11 +45,11 @@ public partial class CardViewModel : ViewModelBase
 
     public CardViewModel()
     {
-        this.WhenAnyValue<CardViewModel, string, ObservableCollection<Category>>(x => x.Categories, CalculateCombinedCategories)
-            .ToProperty(this, x => x.CombinedTags, out _combinedCategoriesHelper);
+        this.WhenAnyValue(x => x.Categories, CalculateCombinedCategories)
+            .ToProperty(this, nameof(CombinedCategories), out _combinedCategoriesHelper, scheduler: RxSchedulers.MainThreadScheduler);
 
-        this.WhenAnyValue<CardViewModel, string, ObservableCollection<Tag>>(x => x.Tags, CalculateCombinedTags)
-            .ToProperty(this, x => x.CombinedTags, out _combinedTagsHelper);
+        this.WhenAnyValue(x => x.Tags, CalculateCombinedTags)
+            .ToProperty(this, nameof(CombinedTags), out _combinedTagsHelper, scheduler: RxSchedulers.MainThreadScheduler);
     }
 
     public static CardViewModel FromDataModel(Card card, Uri? imageUrl = null) => new()
@@ -61,8 +60,8 @@ public partial class CardViewModel : ViewModelBase
         Definition = card.Definition,
         Hint = card.Hint,
         ImageUrl = imageUrl,
-        Categories = new ObservableCollection<Category>(card.Categories),
-        Tags = new ObservableCollection<Tag>(card.Tags),
+        Categories = card.Categories,
+        Tags = card.Tags,
     };
 
     public Card ToDataModel() => new()
@@ -72,13 +71,17 @@ public partial class CardViewModel : ViewModelBase
         Translation = Translation,
         Definition = Definition,
         Hint = Hint,
-        Categories = Categories.ToList(),
-        Tags = Tags.ToList(),
+        Categories = Categories,
+        Tags = Tags,
     };
 
-    private static string CalculateCombinedCategories(IEnumerable<Category> categories)
-        => String.Join(", ", categories.Select(x => x.Name));
+    private static string CalculateCombinedCategories(IReadOnlyCollection<Category> categories)
+        => categories.Count == 0
+            ? ""
+            : "Categories: " + String.Join(", ", categories.Select(x => x.Name));
 
-    private static string CalculateCombinedTags(IEnumerable<Tag> tags)
-        => String.Join(", ", tags.Select(x => x.Name));
+    private static string CalculateCombinedTags(IReadOnlyCollection<Tag> tags)
+        => tags.Count == 0
+            ? ""
+            : "Tags: " + String.Join(", ", tags.Select(x => x.Name));
 }

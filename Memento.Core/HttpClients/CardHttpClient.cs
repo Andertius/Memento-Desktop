@@ -24,6 +24,10 @@ public interface ICardHttpClient
 
     Task DeleteCard(int cardId);
 
+    Task UpdateCardCategories(int cardId, IReadOnlyCollection<int> categoryIds);
+
+    Task UpdateCardTags(int cardId, IReadOnlyCollection<int> tagIds);
+
     Task<string?> UploadImage(int cardId, ImageData image);
 
     Task DeleteImage(int cardId);
@@ -88,6 +92,30 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
         response.EnsureSuccessStatusCode();
     }
 
+    public async Task UpdateCardCategories(int cardId, IReadOnlyCollection<int> categoryIds)
+    {
+        string token = await GetToken();
+        using var request = new HttpRequestMessage(HttpMethod.Put, $"{ApiPaths.CardsApiPath}/{cardId}/categories");
+        request.Content = new StringContent(JsonSerializer.Serialize(new { categoryIds }), Encoding.UTF8, "application/json");
+
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await _client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task UpdateCardTags(int cardId, IReadOnlyCollection<int> tagIds)
+    {
+        string token = await GetToken();
+        using var request = new HttpRequestMessage(HttpMethod.Put, $"{ApiPaths.CardsApiPath}/{cardId}/tags");
+        request.Content = new StringContent(JsonSerializer.Serialize(new { tagIds }), Encoding.UTF8, "application/json");
+
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await _client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+    }
+
     public async Task DeleteCard(int cardId)
     {
         string token = await GetToken();
@@ -109,7 +137,7 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
         string fileName = Path.GetFileName(image.FilePath.AbsolutePath);
         string extension = Path.GetExtension(fileName);
 
-        using var request = new HttpRequestMessage(HttpMethod.Post, ApiPaths.CardsApiPath + $"/{cardId}/image");
+        using var request = new HttpRequestMessage(HttpMethod.Post, $"{ApiPaths.CardsApiPath}/{cardId}/image");
 
         using var imageContent = new StreamContent(image.File);
         imageContent.Headers.ContentType = ContentTypeHelper.FileExtensionToMediaTypeHeaderValue(extension);
@@ -131,7 +159,7 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
 
     public async Task DeleteImage(int cardId)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Delete, ApiPaths.CardsApiPath + $"/{cardId}/image");
+        using var request = new HttpRequestMessage(HttpMethod.Delete, $"{ApiPaths.CardsApiPath}/{cardId}/image");
 
         string token = await GetToken();
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);

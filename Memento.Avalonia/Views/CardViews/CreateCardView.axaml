@@ -3,15 +3,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Memento.Core.ViewModels.CardViewModels;assembly=Memento.Core"
-             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             xmlns:labs="clr-namespace:Avalonia.Labs.Controls;assembly=Avalonia.Labs.Controls"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:converters="clr-namespace:Memento.Avalonia.Converters"
              Background="{DynamicResource PrimaryBackground}"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
              x:Class="Memento.Avalonia.Views.CardViews.CreateCardView"
-             x:DataType="vm:CreateCardViewModel">
+             x:DataType="vm:CreateCardViewModel"
+             x:Name="CreateCardControl">
 
     <Design.DataContext>
         <vm:CreateCardViewModel />
     </Design.DataContext>
+    
+    <UserControl.Resources>
+        <converters:ComboBoxConverter x:Key="ComboBoxConverter" />
+    </UserControl.Resources>
 
     <Border Background="{DynamicResource PrimaryBackground}"
             BorderBrush="{DynamicResource ItemBorderBrush}"
@@ -35,10 +42,11 @@
                 <Panel Height="350" Width="350">
                     <Rectangle Fill="{DynamicResource ImageBackdrop}" />
 
-                    <Image Margin="20"
-                           MaxHeight="350"
-                           MaxWidth="350"
-                           asyncImageLoader:ImageLoader.Source="{Binding Card.ImageUrl}" />
+                    <labs:AsyncImage PlaceholderSource="/Assets/placeholder.png"
+                                     Margin="20"
+                                     MaxHeight="350"
+                                     MaxWidth="350"
+                                     Source="{Binding Card.ImageUrl}" />
                 </Panel>
 
                 <Grid ColumnDefinitions="* *">
@@ -76,12 +84,54 @@
 
             <StackPanel Grid.Row="3" Grid.Column="0">
                 <Label Content="Categories" Target="CategoriesComboBox" />
-                <TextBox Text="{Binding Card.Word}" x:Name="CategoriesComboBox" />
+
+                <ComboBox ItemsSource="{Binding AvailableCategories}" x:Name="CategoriesComboBox">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox Content="{Binding Name}"
+                                      IsCheckedChanged="OnCategoryCheckedChanged">
+                                <CheckBox.IsChecked>
+                                    <MultiBinding Converter="{StaticResource ComboBoxConverter}">
+                                        <Binding Path="Id" />
+                                        <Binding Path="DataContext.Card.Categories" ElementName="CreateCardControl" FallbackValue="{x:Null}"/>
+                                    </MultiBinding>
+                                </CheckBox.IsChecked>
+                            </CheckBox>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+
+                    <ComboBox.SelectionBoxItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ElementName=CreateCardControl, Path=DataContext.Card.CombinedCategories, FallbackValue={x:Static sys:String.Empty}}"/>
+                        </DataTemplate>
+                    </ComboBox.SelectionBoxItemTemplate>
+                </ComboBox>
             </StackPanel>
 
             <StackPanel Grid.Row="3" Grid.Column="1">
                 <Label Content="Tags" Target="TagsComboBox" />
-                <TextBox Text="{Binding Card.Word}" x:Name="TagsComboBox" />
+
+                <ComboBox ItemsSource="{Binding AvailableTags}" x:Name="TagsComboBox">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox Content="{Binding Name}"
+                                      IsCheckedChanged="OnTagCheckedChanged">
+                                <CheckBox.IsChecked>
+                                    <MultiBinding Converter="{StaticResource ComboBoxConverter}">
+                                        <Binding Path="Id" />
+                                        <Binding Path="DataContext.Card.Tags" ElementName="CreateCardControl" FallbackValue="{x:Null}"/>
+                                    </MultiBinding>
+                                </CheckBox.IsChecked>
+                            </CheckBox>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+
+                    <ComboBox.SelectionBoxItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ElementName=CreateCardControl, Path=DataContext.Card.CombinedTags, FallbackValue={x:Static sys:String.Empty}}"/>
+                        </DataTemplate>
+                    </ComboBox.SelectionBoxItemTemplate>
+                </ComboBox>
             </StackPanel>
 
             <StackPanel Grid.Row="4"

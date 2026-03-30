@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Memento.Core.Data;
 using Memento.Core.HttpClients;
 using Memento.Core.Options;
+using Memento.Core.ViewModels.CategoryViewModels;
 using Memento.Core.ViewModels.DialogViewModels;
+using Memento.Core.ViewModels.TagViewModels;
 using Microsoft.Extensions.Options;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
@@ -18,6 +21,12 @@ public partial class CreateCardViewModel : DialogViewModelBase
 
     [Reactive]
     private CardViewModel _card = new();
+
+    [Reactive]
+    private IReadOnlyCollection<CategoryViewModel> _availableCategories = [];
+
+    [Reactive]
+    private IReadOnlyCollection<TagViewModel> _availableTags = [];
 
     private readonly ICardHttpClient _client;
 
@@ -32,10 +41,14 @@ public partial class CreateCardViewModel : DialogViewModelBase
 
     public CreateCardViewModel(
         ICardHttpClient client,
-        IOptions<ApiClientOptions> options)
+        IOptions<ApiClientOptions> options,
+        IReadOnlyCollection<CategoryViewModel> categories,
+        IReadOnlyCollection<TagViewModel> tags)
     {
         _client = client;
         _options = options.Value;
+        _availableCategories = categories;
+        _availableTags = tags;
     }
 
     public Interaction<Unit, ImageData> OpenFile { get; } = new();

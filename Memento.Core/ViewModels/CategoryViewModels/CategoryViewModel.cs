@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Memento.Core.Data;
 using Memento.Core.DataModels;
@@ -27,14 +26,14 @@ public partial class CategoryViewModel : ViewModelBase
     private ImageData? _uploadedImageData;
 
     [Reactive]
-    private ObservableCollection<Tag> _tags = [];
+    private IReadOnlyCollection<Tag> _tags = [];
 
     [ObservableAsProperty]
     public string _combinedTags = "";
 
     public CategoryViewModel()
     {
-        this.WhenAnyValue<CategoryViewModel, string, ObservableCollection<Tag>>(x => x.Tags, CalculateCombinedTags)
+        this.WhenAnyValue(x => x.Tags, CalculateCombinedTags)
             .ToProperty(this, x => x.CombinedTags, out _combinedTagsHelper);
     }
 
@@ -44,7 +43,7 @@ public partial class CategoryViewModel : ViewModelBase
         Name = category.Name,
         Description = category.Description,
         ImageUrl = imageUrl,
-        Tags = new ObservableCollection<Tag>(category.Tags),
+        Tags = category.Tags,
     };
 
     public Category ToDataModel() => new()
@@ -52,9 +51,11 @@ public partial class CategoryViewModel : ViewModelBase
         Id = Id,
         Name = Name,
         Description = Description,
-        Tags = Tags.ToList(),
+        Tags = Tags,
     };
 
-    private static string CalculateCombinedTags(IEnumerable<Tag> tags)
-        => String.Join(", ", tags.Select(x => x.Name));
+    private static string CalculateCombinedTags(IReadOnlyCollection<Tag> tags)
+        => tags.Count == 0
+            ? ""
+            : "Tags: " + String.Join(", ", tags.Select(x => x.Name));
 }

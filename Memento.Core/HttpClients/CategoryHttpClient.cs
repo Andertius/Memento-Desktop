@@ -24,6 +24,8 @@ public interface ICategoryHttpClient
 
     Task DeleteCategory(int categoryId);
 
+    Task UpdateCategoryTags(int categoryId, IReadOnlyCollection<int> tagIds);
+
     Task<string?> UploadImage(int categoryId, ImageData image);
 
     Task DeleteImage(int categoryId);
@@ -99,6 +101,18 @@ public sealed class CategoryHttpClient(IHttpClientFactory _clientFactory) : ICat
         response.EnsureSuccessStatusCode();
     }
 
+    public async Task UpdateCategoryTags(int categoryId, IReadOnlyCollection<int> tagIds)
+    {
+        string token = await GetToken();
+        using var request = new HttpRequestMessage(HttpMethod.Put, $"{ApiPaths.CategoriesApiPath}/{categoryId}/tags");
+        request.Content = new StringContent(JsonSerializer.Serialize(new { tagIds }), Encoding.UTF8, "application/json");
+
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await _client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+    }
+
     public async Task<string?> UploadImage(int categoryId, ImageData image)
     {
         if (image.File is null || image.FilePath is null)
@@ -109,7 +123,7 @@ public sealed class CategoryHttpClient(IHttpClientFactory _clientFactory) : ICat
         string fileName = Path.GetFileName(image.FilePath.AbsolutePath);
         string extension = Path.GetExtension(fileName);
 
-        using var request = new HttpRequestMessage(HttpMethod.Post, ApiPaths.CategoriesApiPath + $"/{categoryId}/image");
+        using var request = new HttpRequestMessage(HttpMethod.Post, $"{ApiPaths.CategoriesApiPath}/{categoryId}/image");
 
         using var imageContent = new StreamContent(image.File);
         imageContent.Headers.ContentType = ContentTypeHelper.FileExtensionToMediaTypeHeaderValue(extension);
@@ -131,7 +145,7 @@ public sealed class CategoryHttpClient(IHttpClientFactory _clientFactory) : ICat
 
     public async Task DeleteImage(int categoryId)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Delete, ApiPaths.CategoriesApiPath + $"/{categoryId}/image");
+        using var request = new HttpRequestMessage(HttpMethod.Delete, $"{ApiPaths.CategoriesApiPath}/{categoryId}/image");
 
         string token = await GetToken();
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);

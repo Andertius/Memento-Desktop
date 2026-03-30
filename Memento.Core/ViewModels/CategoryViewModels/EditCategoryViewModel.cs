@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -8,6 +10,7 @@ using Memento.Core.Interfaces;
 using Memento.Core.Options;
 using Memento.Core.Services;
 using Memento.Core.ViewModels.DialogViewModels;
+using Memento.Core.ViewModels.TagViewModels;
 using Microsoft.Extensions.Options;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
@@ -27,6 +30,9 @@ public partial class EditCategoryViewModel : DialogViewModelBase, IDialogProvide
     [Reactive]
     private DialogViewModelBase? _dialogViewModel;
 
+    [Reactive]
+    private IReadOnlyCollection<TagViewModel> _availableTags = [];
+
     /// <summary>
     /// Design-time only constructor
     /// </summary>
@@ -43,13 +49,15 @@ public partial class EditCategoryViewModel : DialogViewModelBase, IDialogProvide
         ICategoryHttpClient client,
         IDialogService dialogService,
         IOptions<ApiClientOptions> options,
-        CategoryViewModel category)
+        CategoryViewModel category,
+        IReadOnlyCollection<TagViewModel> tags)
     {
         _client = client;
         _dialogService = dialogService;
         _options = options.Value;
         _category = category;
         _temporaryImageUrl = Category.ImageUrl;
+        _availableTags = tags;
     }
 
     public Interaction<Unit, ImageData?> OpenFile { get; } = new();
@@ -65,12 +73,13 @@ public partial class EditCategoryViewModel : DialogViewModelBase, IDialogProvide
             Category.ImageUrl = new Uri($"{_options.Host}/{ApiPaths.CategoriesImagesPath}/{fileName}");
             Category.UploadedImageData = null;
         }
-        else
+        else if (Category.ImageUrl is null)
         {
             await _client.DeleteImage(Category.Id);
         }
 
         await _client.UpdateCategory(Category.ToDataModel());
+        await _client.UpdateCategoryTags(Category.Id, Category.Tags.Select(x => x.Id).ToArray());
         Close();
     }
 

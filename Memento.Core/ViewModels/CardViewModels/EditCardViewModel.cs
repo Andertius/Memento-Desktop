@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -7,7 +9,9 @@ using Memento.Core.HttpClients;
 using Memento.Core.Interfaces;
 using Memento.Core.Options;
 using Memento.Core.Services;
+using Memento.Core.ViewModels.CategoryViewModels;
 using Memento.Core.ViewModels.DialogViewModels;
+using Memento.Core.ViewModels.TagViewModels;
 using Microsoft.Extensions.Options;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
@@ -27,6 +31,12 @@ public partial class EditCardViewModel : DialogViewModelBase, IDialogProvider
     [Reactive]
     private DialogViewModelBase? _dialogViewModel;
 
+    [Reactive]
+    private IReadOnlyCollection<CategoryViewModel> _availableCategories = [];
+
+    [Reactive]
+    private IReadOnlyCollection<TagViewModel> _availableTags = [];
+    
     /// <summary>
     /// Design-time only constructor
     /// </summary>
@@ -43,13 +53,17 @@ public partial class EditCardViewModel : DialogViewModelBase, IDialogProvider
         ICardHttpClient client,
         IDialogService dialogService,
         IOptions<ApiClientOptions> options,
-        CardViewModel card)
+        CardViewModel card,
+        IReadOnlyCollection<CategoryViewModel> categories,
+        IReadOnlyCollection<TagViewModel> tags)
     {
         _client = client;
         _dialogService = dialogService;
         _options = options.Value;
         _card = card;
         _temporaryImageUrl = Card.ImageUrl;
+        _availableCategories = categories;
+        _availableTags = tags;
     }
 
     public Interaction<Unit, ImageData?> OpenFile { get; } = new();
@@ -65,12 +79,14 @@ public partial class EditCardViewModel : DialogViewModelBase, IDialogProvider
             Card.ImageUrl = new Uri($"{_options.Host}/{ApiPaths.CardsImagesPath}/{fileName}");
             Card.UploadedImageData = null;
         }
-        else
+        else if (Card.ImageUrl is null)
         {
             await _client.DeleteImage(Card.Id);
         }
 
         await _client.UpdateCard(Card.ToDataModel());
+        await _client.UpdateCardCategories(Card.Id, Card.Categories.Select(x => x.Id).ToArray());
+        await _client.UpdateCardTags(Card.Id, Card.Tags.Select(x => x.Id).ToArray());
         Close();
     }
 

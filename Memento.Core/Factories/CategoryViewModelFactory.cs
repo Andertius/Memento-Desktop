@@ -1,16 +1,18 @@
+using System.Collections.Generic;
 using Memento.Core.HttpClients;
 using Memento.Core.Options;
 using Memento.Core.Services;
 using Memento.Core.ViewModels.CategoryViewModels;
+using Memento.Core.ViewModels.TagViewModels;
 using Microsoft.Extensions.Options;
 
 namespace Memento.Core.Factories;
 
 public interface ICategoryViewModelFactory
 {
-    CreateCategoryViewModel CreateCreateCategoryViewModel();
+    CreateCategoryViewModel CreateCreateCategoryViewModel(IReadOnlyCollection<TagViewModel> tags);
 
-    EditCategoryViewModel CreateEditCategoryViewModel(CategoryViewModel categoryViewModel);
+    EditCategoryViewModel CreateEditCategoryViewModel(CategoryViewModel categoryViewModel, IReadOnlyCollection<TagViewModel> tags);
 }
 
 public sealed class CategoryViewModelFactory(
@@ -18,9 +20,9 @@ public sealed class CategoryViewModelFactory(
     IDialogService _dialogService,
     IOptions<ApiClientOptions> _options) : ICategoryViewModelFactory
 {
-    public CreateCategoryViewModel CreateCreateCategoryViewModel()
-        => new(_client, _options);
+    public CreateCategoryViewModel CreateCreateCategoryViewModel(IReadOnlyCollection<TagViewModel> tags)
+        => new(_client, _options, tags);
 
-    public EditCategoryViewModel CreateEditCategoryViewModel(CategoryViewModel categoryViewModel)
-        => new(_client, _dialogService, _options, categoryViewModel);
+    public EditCategoryViewModel CreateEditCategoryViewModel(CategoryViewModel categoryViewModel, IReadOnlyCollection<TagViewModel> tags)
+        => new(_client, _dialogService, _options, categoryViewModel, tags);
 }

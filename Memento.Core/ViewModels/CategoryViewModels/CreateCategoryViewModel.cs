@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -6,6 +8,7 @@ using Memento.Core.Data;
 using Memento.Core.HttpClients;
 using Memento.Core.Options;
 using Memento.Core.ViewModels.DialogViewModels;
+using Memento.Core.ViewModels.TagViewModels;
 using Microsoft.Extensions.Options;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
@@ -18,6 +21,9 @@ public partial class CreateCategoryViewModel : DialogViewModelBase
 
     [Reactive]
     private CategoryViewModel _category = new();
+
+    [Reactive]
+    private IReadOnlyCollection<TagViewModel> _availableTags = [];
 
     private readonly ICategoryHttpClient _client;
 
@@ -32,10 +38,12 @@ public partial class CreateCategoryViewModel : DialogViewModelBase
 
     public CreateCategoryViewModel(
         ICategoryHttpClient client,
-        IOptions<ApiClientOptions> options)
+        IOptions<ApiClientOptions> options,
+        IEnumerable<TagViewModel> tags)
     {
         _client = client;
         _options = options.Value;
+        _availableTags = new ObservableCollection<TagViewModel>(tags);
     }
 
     public Interaction<Unit, ImageData?> OpenFile { get; } = new();

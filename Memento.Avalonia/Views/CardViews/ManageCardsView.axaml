@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:vm="clr-namespace:Memento.Core.ViewModels.CardViewModels;assembly=Memento.Core"
-             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             xmlns:labs="clr-namespace:Avalonia.Labs.Controls;assembly=Avalonia.Labs.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              Background="{DynamicResource PrimaryBackground}"
              x:Class="Memento.Avalonia.Views.CardViews.ManageCardsView"
@@ -50,16 +50,17 @@
                                         CornerRadius="5"
                                         Padding="4"
                                         Width="300"
-                                        Command="{Binding ElementName=CardsList, Path=DataContext.EditCardCommand}"
+                                        Command="{Binding ElementName=CardsList, Path=DataContext.EditCardCommand, FallbackValue={x:Null}}"
                                         CommandParameter="{Binding}">
                                     <StackPanel>
                                         <Panel Height="275" Width="275">
                                             <Rectangle Fill="{DynamicResource ImageBackdrop}" />
 
-                                            <Image Margin="20"
-                                                   MaxHeight="350"
-                                                   MaxWidth="350"
-                                                   asyncImageLoader:ImageLoader.Source="{Binding ImageUrl}" />
+                                            <labs:AsyncImage PlaceholderSource="/Assets/placeholder.png"
+                                                             Margin="20"
+                                                             MaxHeight="350"
+                                                             MaxWidth="350"
+                                                             Source="{Binding ImageUrl}" />
                                         </Panel>
 
                                         <TextBlock Text="{Binding Word}" HorizontalAlignment="Center" FontSize="22" />

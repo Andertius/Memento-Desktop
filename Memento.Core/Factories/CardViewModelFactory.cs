@@ -1,16 +1,19 @@
+using System.Collections.Generic;
 using Memento.Core.HttpClients;
 using Memento.Core.Options;
 using Memento.Core.Services;
 using Memento.Core.ViewModels.CardViewModels;
+using Memento.Core.ViewModels.CategoryViewModels;
+using Memento.Core.ViewModels.TagViewModels;
 using Microsoft.Extensions.Options;
 
 namespace Memento.Core.Factories;
 
 public interface ICardViewModelFactory
 {
-    CreateCardViewModel CreateCreateCardViewModel();
+    CreateCardViewModel CreateCreateCardViewModel(IReadOnlyCollection<CategoryViewModel> categories, IReadOnlyCollection<TagViewModel> tags);
 
-    EditCardViewModel CreateEditCardViewModel(CardViewModel cardViewModel);
+    EditCardViewModel CreateEditCardViewModel(CardViewModel cardViewModel, IReadOnlyCollection<CategoryViewModel> categories, IReadOnlyCollection<TagViewModel> tags);
 }
 
 public sealed class CardViewModelFactory(
@@ -18,9 +21,9 @@ public sealed class CardViewModelFactory(
     IDialogService _dialogService,
     IOptions<ApiClientOptions> _options) : ICardViewModelFactory
 {
-    public CreateCardViewModel CreateCreateCardViewModel()
-        => new(_client, _options);
+    public CreateCardViewModel CreateCreateCardViewModel(IReadOnlyCollection<CategoryViewModel> categories, IReadOnlyCollection<TagViewModel> tags)
+        => new(_client, _options, categories, tags);
 
-    public EditCardViewModel CreateEditCardViewModel(CardViewModel cardViewModel)
-        => new(_client, _dialogService, _options, cardViewModel);
+    public EditCardViewModel CreateEditCardViewModel(CardViewModel cardViewModel, IReadOnlyCollection<CategoryViewModel> categories, IReadOnlyCollection<TagViewModel> tags)
+        => new(_client, _dialogService, _options, cardViewModel, categories, tags);
 }

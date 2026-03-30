@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Memento.Core.DataModels;
 
-public sealed class Card
+public sealed class Card : IEntity
 {
     public int Id { get; set; }
     public string? Word { get; set; }
@@ -11,6 +11,6 @@ public sealed class Card
     public string? Hint { get; set; }
     public string? Image { get; set; }
 
-    public ICollection<Category> Categories { get; set; } = [];
-    public ICollection<Tag> Tags { get; set; } = [];
+    public IReadOnlyCollection<Category> Categories { get; set; } = [];
+    public IReadOnlyCollection<Tag> Tags { get; set; } = [];
 }
