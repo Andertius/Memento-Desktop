@@ -19,6 +19,11 @@ public partial class EditCardView : ReactiveUserControl<EditCardViewModel>
     {
         InitializeComponent();
 
+        if (Design.IsDesignMode)
+        {
+            return;
+        }
+
         this.WhenActivated(disposables =>
             ViewModel!.OpenFile.RegisterHandler(async context =>
             {

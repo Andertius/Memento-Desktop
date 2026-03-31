@@ -4,15 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:vm="clr-namespace:Memento.Core.ViewModels.TagViewModels;assembly=Memento.Core"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:interfaces="clr-namespace:Memento.Core.Interfaces.ViewModels.TagViewModels;assembly=Memento.Core"
+             xmlns:dd="clr-namespace:Memento.Avalonia.DesignTime"
              Background="{DynamicResource PrimaryBackground}"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             d:DataContext="{x:Static dd:DesignData.ManageTagsViewModel}"
              x:Class="Memento.Avalonia.Views.TagViews.ManageTagsView"
-             x:DataType="vm:ManageTagsViewModel"
+             x:DataType="interfaces:IManageTagsViewModel"
              x:Name="CategoryList">
-
-    <Design.DataContext>
-        <vm:ManageTagsViewModel />
-    </Design.DataContext>
 
     <Grid>
         <Border Padding="20">

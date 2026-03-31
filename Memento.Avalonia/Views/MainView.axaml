@@ -3,18 +3,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-        xmlns:vm="clr-namespace:Memento.Core.ViewModels;assembly=Memento.Core"
+        xmlns:vm="clr-namespace:Memento.Core.Interfaces.ViewModels;assembly=Memento.Core"
         xmlns:data="clr-namespace:Memento.Core.Data;assembly=Memento.Core"
         xmlns:converters="clr-namespace:Memento.Avalonia.Converters"
+        xmlns:dd="clr-namespace:Memento.Avalonia.DesignTime"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        d:DataContext="{x:Static dd:DesignData.MainViewModel}"
         x:Class="Memento.Avalonia.Views.MainView"
-        x:DataType="vm:MainViewModel"
+        x:DataType="vm:IMainViewModel"
         Icon="/Assets/icon.png"
         Title="Memento">
-
-    <Design.DataContext>
-        <vm:MainViewModel />
-    </Design.DataContext>
 
     <Window.Resources>
         <converters:ActivePageConverter x:Key="ActivePageConverter" />

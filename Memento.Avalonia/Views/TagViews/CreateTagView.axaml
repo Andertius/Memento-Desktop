@@ -2,15 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:Memento.Core.ViewModels.TagViewModels;assembly=Memento.Core"
+             xmlns:vm="clr-namespace:Memento.Core.Interfaces.ViewModels.TagViewModels;assembly=Memento.Core"
+             xmlns:dd="clr-namespace:Memento.Avalonia.DesignTime"
              Background="{DynamicResource PrimaryBackground}"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
+             d:DataContext="{x:Static dd:DesignData.CreateTagViewModel}"
              x:Class="Memento.Avalonia.Views.TagViews.CreateTagView"
-             x:DataType="vm:CreateTagViewModel">
-
-    <Design.DataContext>
-        <vm:CreateTagViewModel />
-    </Design.DataContext>
+             x:DataType="vm:ICreateTagViewModel">
 
     <Border Background="{DynamicResource PrimaryBackground}"
             BorderBrush="{DynamicResource ItemBorderBrush}"

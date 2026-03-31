@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Memento.Core.Data;
 using Memento.Core.HttpClients;
+using Memento.Core.Interfaces.ViewModels.CardViewModels;
 using Memento.Core.Options;
 using Memento.Core.ViewModels.CategoryViewModels;
 using Memento.Core.ViewModels.DialogViewModels;
@@ -15,41 +16,22 @@ using ReactiveUI.SourceGenerators;
 
 namespace Memento.Core.ViewModels.CardViewModels;
 
-public partial class CreateCardViewModel : DialogViewModelBase
+public partial class CreateCardViewModel(
+    ICardHttpClient _client,
+    IOptions<ApiClientOptions> options,
+    IReadOnlyCollection<CategoryViewModel> categories,
+    IReadOnlyCollection<TagViewModel> tags) : DialogViewModelBase, ICreateCardViewModel
 {
-    private readonly ApiClientOptions _options;
+    private readonly ApiClientOptions _options = options.Value;
 
     [Reactive]
     private CardViewModel _card = new();
 
     [Reactive]
-    private IReadOnlyCollection<CategoryViewModel> _availableCategories = [];
+    private IReadOnlyCollection<CategoryViewModel> _availableCategories = categories;
 
     [Reactive]
-    private IReadOnlyCollection<TagViewModel> _availableTags = [];
-
-    private readonly ICardHttpClient _client;
-
-    /// <summary>
-    /// Design-time only constructor
-    /// </summary>
-    public CreateCardViewModel()
-    {
-        _client = null!;
-        _options = null!;
-    }
-
-    public CreateCardViewModel(
-        ICardHttpClient client,
-        IOptions<ApiClientOptions> options,
-        IReadOnlyCollection<CategoryViewModel> categories,
-        IReadOnlyCollection<TagViewModel> tags)
-    {
-        _client = client;
-        _options = options.Value;
-        _availableCategories = categories;
-        _availableTags = tags;
-    }
+    private IReadOnlyCollection<TagViewModel> _availableTags = tags;
 
     public Interaction<Unit, ImageData> OpenFile { get; } = new();
 

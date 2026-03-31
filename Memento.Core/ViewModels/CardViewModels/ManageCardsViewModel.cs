@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Memento.Core.Data;
 using Memento.Core.Factories;
 using Memento.Core.HttpClients;
-using Memento.Core.Interfaces;
+using Memento.Core.Interfaces.ViewModels.CardViewModels;
 using Memento.Core.Options;
 using Memento.Core.Services;
 using Memento.Core.ViewModels.CategoryViewModels;
@@ -16,8 +16,17 @@ using ReactiveUI.SourceGenerators;
 
 namespace Memento.Core.ViewModels.CardViewModels;
 
-public partial class ManageCardsViewModel : PageViewModel, IDialogProvider
+public partial class ManageCardsViewModel(
+    ICardHttpClient _cardClient,
+    ICategoryHttpClient _categoryClient,
+    ITagHttpClient _tagClient,
+    ICardViewModelFactory _cardViewModelFactory,
+    IDialogService _dialogService,
+    IOptions<ApiClientOptions> options)
+    : PageViewModel(ApplicationPageNames.ManageCards), IManageCardsViewModel
 {
+    private readonly ApiClientOptions _options = options.Value;
+    
     [Reactive]
     private ObservableCollection<CardViewModel> _cards = [];
     
@@ -29,48 +38,10 @@ public partial class ManageCardsViewModel : PageViewModel, IDialogProvider
 
     [Reactive]
     private DialogViewModelBase? _dialogViewModel;
-
-    private readonly ICardHttpClient _client;
-    private readonly ICategoryHttpClient _categoryClient;
-    private readonly ITagHttpClient _tagClient;
-    private readonly ICardViewModelFactory _cardViewModelFactory;
-    private readonly IDialogService _dialogService;
-    private readonly ApiClientOptions _options;
-
-    /// <summary>
-    /// Design-time only constructor
-    /// </summary>
-    public ManageCardsViewModel()
-        : base(ApplicationPageNames.ManageCards)
-    {
-        _client = null!;
-        _categoryClient = null!;
-        _tagClient = null!;
-        _cardViewModelFactory = null!;
-        _dialogService = null!;
-        _options = null!;
-    }
-
-    public ManageCardsViewModel(
-        ICardHttpClient client,
-        ICategoryHttpClient categoryClient,
-        ITagHttpClient tagClient,
-        ICardViewModelFactory cardViewModelFactory,
-        IDialogService dialogService,
-        IOptions<ApiClientOptions> options)
-        : base(ApplicationPageNames.ManageCards)
-    {
-        _client = client;
-        _categoryClient = categoryClient;
-        _tagClient = tagClient;
-        _cardViewModelFactory = cardViewModelFactory;
-        _dialogService = dialogService;
-        _options = options.Value;
-    }
-
+    
     public override async Task OnPageSelected()
     {
-        var cards = await _client.GetCards();
+        var cards = await _cardClient.GetCards();
         var categories = await _categoryClient.GetCategories();
         var tags = await _tagClient.GetTags();
 
@@ -92,7 +63,7 @@ public partial class ManageCardsViewModel : PageViewModel, IDialogProvider
     }
 
     [ReactiveCommand]
-    public async Task EditCard(CardViewModel cardViewModel)
+    public async Task EditCardAsync(CardViewModel cardViewModel)
     {
         var viewModel = _cardViewModelFactory.CreateEditCardViewModel(cardViewModel, Categories, Tags);
         await _dialogService.ShowDialogAsync(this, viewModel);

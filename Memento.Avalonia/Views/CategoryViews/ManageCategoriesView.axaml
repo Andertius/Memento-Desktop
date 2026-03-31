@@ -4,16 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:vm="clr-namespace:Memento.Core.ViewModels.CategoryViewModels;assembly=Memento.Core"
+             xmlns:interfaces="clr-namespace:Memento.Core.Interfaces.ViewModels.CategoryViewModels;assembly=Memento.Core"
              xmlns:labs="clr-namespace:Avalonia.Labs.Controls;assembly=Avalonia.Labs.Controls"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:dd="clr-namespace:Memento.Avalonia.DesignTime"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
              Background="{DynamicResource PrimaryBackground}"
+             d:DataContext="{x:Static dd:DesignData.ManageCategoriesViewModel}"
              x:Class="Memento.Avalonia.Views.CategoryViews.ManageCategoriesView"
-             x:DataType="vm:ManageCategoriesViewModel"
+             x:DataType="interfaces:IManageCategoriesViewModel"
              x:Name="CategoryList">
-    
-    <Design.DataContext>
-        <vm:ManageCategoriesViewModel/>
-    </Design.DataContext>
 
     <Grid>
         <Border Padding="20">
@@ -60,7 +59,7 @@
                                                              Margin="20"
                                                              MaxHeight="275"
                                                              MaxWidth="275"
-                                                             Source="{Binding ImageUrl}"/>
+                                                             Source="{Binding ImageUrl}" />
                                         </Panel>
 
                                         <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" FontSize="22" />
@@ -79,7 +78,7 @@
 
             <ContentControl Content="{Binding DialogViewModel}"
                             HorizontalAlignment="Center"
-                            VerticalAlignment="Center"/>
+                            VerticalAlignment="Center" />
         </Grid>
     </Grid>
 </UserControl>

@@ -3,19 +3,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             xmlns:vm="clr-namespace:Memento.Core.ViewModels.CategoryViewModels;assembly=Memento.Core"
+             xmlns:vm="clr-namespace:Memento.Core.Interfaces.ViewModels.CategoryViewModels;assembly=Memento.Core"
              xmlns:labs="clr-namespace:Avalonia.Labs.Controls;assembly=Avalonia.Labs.Controls"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:converters="clr-namespace:Memento.Avalonia.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
+             xmlns:dd="clr-namespace:Memento.Avalonia.DesignTime"
              Background="{DynamicResource PrimaryBackground}"
+             d:DataContext="{x:Static dd:DesignData.EditCategoryViewModel}"
              x:Class="Memento.Avalonia.Views.CategoryViews.EditCategoryView"
-             x:DataType="vm:EditCategoryViewModel"
+             x:DataType="vm:IEditCategoryViewModel"
              x:Name="EditCategoryControl">
-
-    <Design.DataContext>
-        <vm:EditCategoryViewModel />
-    </Design.DataContext>
 
     <UserControl.Resources>
         <converters:ComboBoxConverter x:Key="ComboBoxConverter" />

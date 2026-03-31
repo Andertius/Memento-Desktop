@@ -3,15 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             xmlns:vm="clr-namespace:Memento.Core.ViewModels.TagViewModels;assembly=Memento.Core"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
+             xmlns:vm="clr-namespace:Memento.Core.Interfaces.ViewModels.TagViewModels;assembly=Memento.Core"
+             xmlns:dd="clr-namespace:Memento.Avalonia.DesignTime"
              Background="{DynamicResource PrimaryBackground}"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="200"
+             d:DataContext="{x:Static dd:DesignData.EditTagViewModel}"
              x:Class="Memento.Avalonia.Views.TagViews.EditTagView"
-             x:DataType="vm:EditTagViewModel">
-
-    <Design.DataContext>
-        <vm:EditTagViewModel />
-    </Design.DataContext>
+             x:DataType="vm:IEditTagViewModel">
 
     <Grid>
         <Border Background="{DynamicResource PrimaryBackground}"

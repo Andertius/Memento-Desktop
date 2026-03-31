@@ -6,7 +6,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Memento.Core.Data;
 using Memento.Core.HttpClients;
-using Memento.Core.Interfaces;
+using Memento.Core.Interfaces.ViewModels.CategoryViewModels;
 using Memento.Core.Options;
 using Memento.Core.Services;
 using Memento.Core.ViewModels.DialogViewModels;
@@ -17,7 +17,7 @@ using ReactiveUI.SourceGenerators;
 
 namespace Memento.Core.ViewModels.CategoryViewModels;
 
-public partial class EditCategoryViewModel : DialogViewModelBase, IDialogProvider
+public partial class EditCategoryViewModel : DialogViewModelBase, IEditCategoryViewModel
 {
     private readonly ApiClientOptions _options;
     private readonly ICategoryHttpClient _client;
@@ -31,19 +31,7 @@ public partial class EditCategoryViewModel : DialogViewModelBase, IDialogProvide
     private DialogViewModelBase? _dialogViewModel;
 
     [Reactive]
-    private IReadOnlyCollection<TagViewModel> _availableTags = [];
-
-    /// <summary>
-    /// Design-time only constructor
-    /// </summary>
-    public EditCategoryViewModel()
-    {
-        _client = null!;
-        _dialogService = null!;
-        _options = null!;
-        _category = new CategoryViewModel();
-        _temporaryImageUrl = Category.ImageUrl;
-    }
+    private IReadOnlyCollection<TagViewModel> _availableTags;
 
     public EditCategoryViewModel(
         ICategoryHttpClient client,

@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Memento.Core.Data;
 using Memento.Core.HttpClients;
+using Memento.Core.Interfaces.ViewModels.CategoryViewModels;
 using Memento.Core.Options;
 using Memento.Core.ViewModels.DialogViewModels;
 using Memento.Core.ViewModels.TagViewModels;
@@ -15,36 +16,19 @@ using ReactiveUI.SourceGenerators;
 
 namespace Memento.Core.ViewModels.CategoryViewModels;
 
-public partial class CreateCategoryViewModel : DialogViewModelBase
+public partial class CreateCategoryViewModel(
+    ICategoryHttpClient _client,
+    IOptions<ApiClientOptions> options,
+    IEnumerable<TagViewModel> tags)
+    : DialogViewModelBase, ICreateCategoryViewModel
 {
-    private readonly ApiClientOptions _options;
+    private readonly ApiClientOptions _options = options.Value;
 
     [Reactive]
     private CategoryViewModel _category = new();
 
     [Reactive]
-    private IReadOnlyCollection<TagViewModel> _availableTags = [];
-
-    private readonly ICategoryHttpClient _client;
-
-    /// <summary>
-    /// Design-time only constructor
-    /// </summary>
-    public CreateCategoryViewModel()
-    {
-        _client = null!;
-        _options = null!;
-    }
-
-    public CreateCategoryViewModel(
-        ICategoryHttpClient client,
-        IOptions<ApiClientOptions> options,
-        IEnumerable<TagViewModel> tags)
-    {
-        _client = client;
-        _options = options.Value;
-        _availableTags = new ObservableCollection<TagViewModel>(tags);
-    }
+    private IReadOnlyCollection<TagViewModel> _availableTags = tags.ToList();
 
     public Interaction<Unit, ImageData?> OpenFile { get; } = new();
 

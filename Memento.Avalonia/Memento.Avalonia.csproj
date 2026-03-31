@@ -36,6 +36,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="11.3.9.5" />
+        <PackageReference Include="Tmds.DBus.Protocol" Version="0.91.1" />
     </ItemGroup>
 
     <ItemGroup>

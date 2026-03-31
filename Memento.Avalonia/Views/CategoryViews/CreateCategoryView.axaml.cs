@@ -18,6 +18,11 @@ public partial class CreateCategoryView : ReactiveUserControl<CreateCategoryView
     {
         InitializeComponent();
 
+        if (Design.IsDesignMode)
+        {
+            return;
+        }
+
         this.WhenActivated(disposables =>
             ViewModel!.OpenFile.RegisterHandler(async context =>
             {

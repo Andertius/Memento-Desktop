@@ -1,11 +1,12 @@
 using System.Threading.Tasks;
 using Memento.Core.Data;
 using Memento.Core.Factories;
+using Memento.Core.Interfaces.ViewModels;
 using ReactiveUI.SourceGenerators;
 
 namespace Memento.Core.ViewModels;
 
-public partial class MainViewModel : ViewModelBase
+public partial class MainViewModel : ViewModelBase, IMainViewModel
 {
     private readonly IPageViewModelFactory _pageViewModelFactory;
 
@@ -13,16 +14,7 @@ public partial class MainViewModel : ViewModelBase
     private string _username = "Spaghet";
 
     [Reactive]
-    private PageViewModel _currentPage;
-
-    /// <summary>
-    /// Design-time constructor only.
-    /// </summary>
-    public MainViewModel()
-    {
-        _pageViewModelFactory = null!;
-        CurrentPage = new HomePageViewModel();
-    }
+    private IPageViewModel _currentPage;
 
     public MainViewModel(IPageViewModelFactory pageViewModelFactory)
     {

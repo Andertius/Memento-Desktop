@@ -6,7 +6,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Memento.Core.Data;
 using Memento.Core.HttpClients;
-using Memento.Core.Interfaces;
+using Memento.Core.Interfaces.ViewModels.CardViewModels;
 using Memento.Core.Options;
 using Memento.Core.Services;
 using Memento.Core.ViewModels.CategoryViewModels;
@@ -18,7 +18,7 @@ using ReactiveUI.SourceGenerators;
 
 namespace Memento.Core.ViewModels.CardViewModels;
 
-public partial class EditCardViewModel : DialogViewModelBase, IDialogProvider
+public partial class EditCardViewModel : DialogViewModelBase, IEditCardViewModel
 {
     private readonly ApiClientOptions _options;
     private readonly ICardHttpClient _client;
@@ -32,23 +32,11 @@ public partial class EditCardViewModel : DialogViewModelBase, IDialogProvider
     private DialogViewModelBase? _dialogViewModel;
 
     [Reactive]
-    private IReadOnlyCollection<CategoryViewModel> _availableCategories = [];
+    private IReadOnlyCollection<CategoryViewModel> _availableCategories;
 
     [Reactive]
-    private IReadOnlyCollection<TagViewModel> _availableTags = [];
+    private IReadOnlyCollection<TagViewModel> _availableTags;
     
-    /// <summary>
-    /// Design-time only constructor
-    /// </summary>
-    public EditCardViewModel()
-    {
-        _client = null!;
-        _dialogService = null!;
-        _options = null!;
-        _card = new CardViewModel();
-        _temporaryImageUrl = Card.ImageUrl;
-    }
-
     public EditCardViewModel(
         ICardHttpClient client,
         IDialogService dialogService,

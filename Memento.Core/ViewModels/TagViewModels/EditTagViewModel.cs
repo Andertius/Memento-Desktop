@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Memento.Core.HttpClients;
-using Memento.Core.Interfaces;
+using Memento.Core.Interfaces.ViewModels.TagViewModels;
 using Memento.Core.Services;
 using Memento.Core.ViewModels.DialogViewModels;
 using ReactiveUI.SourceGenerators;
@@ -11,21 +11,13 @@ public partial class EditTagViewModel(
     ITagHttpClient client,
     IDialogService dialogService,
     TagViewModel tag)
-    : DialogViewModelBase, IDialogProvider
+    : DialogViewModelBase, IEditTagViewModel
 {
     [Reactive]
     private TagViewModel _tag = tag;
 
     [Reactive]
     private DialogViewModelBase? _dialogViewModel;
-
-    /// <summary>
-    /// Design-time only constructor
-    /// </summary>
-    public EditTagViewModel()
-        : this(null!, null!, new TagViewModel())
-    {
-    }
 
     public bool Deleted { get; private set; }
 

@@ -4,46 +4,23 @@ using System.Threading.Tasks;
 using Memento.Core.Data;
 using Memento.Core.Factories;
 using Memento.Core.HttpClients;
-using Memento.Core.Interfaces;
+using Memento.Core.Interfaces.ViewModels.TagViewModels;
 using Memento.Core.Services;
 using Memento.Core.ViewModels.DialogViewModels;
 using ReactiveUI.SourceGenerators;
 
 namespace Memento.Core.ViewModels.TagViewModels;
 
-public partial class ManageTagsViewModel : PageViewModel, IDialogProvider
+public partial class ManageTagsViewModel(
+    ITagHttpClient _client,
+    ITagViewModelFactory _tagViewModelFactory,
+    IDialogService _dialogService) : PageViewModel(ApplicationPageNames.ManageTags), IManageTagsViewModel
 {
     [Reactive]
     private ObservableCollection<TagViewModel> _tags = [];
 
     [Reactive]
     private DialogViewModelBase? _dialogViewModel;
-
-    private readonly ITagHttpClient _client;
-    private readonly ITagViewModelFactory _tagViewModelFactory;
-    private readonly IDialogService _dialogService;
-
-    /// <summary>
-    /// Design-time only constructor
-    /// </summary>
-    public ManageTagsViewModel()
-        : base(ApplicationPageNames.ManageTags)
-    {
-        _client = null!;
-        _dialogService = null!;
-        _tagViewModelFactory = null!;
-    }
-
-    public ManageTagsViewModel(
-        ITagHttpClient client,
-        ITagViewModelFactory tagViewModelFactory,
-        IDialogService dialogService)
-        : base(ApplicationPageNames.ManageTags)
-    {
-        _client = client;
-        _tagViewModelFactory = tagViewModelFactory;
-        _dialogService = dialogService;
-    }
 
     public override async Task OnPageSelected()
     {

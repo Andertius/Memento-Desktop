@@ -1,21 +1,15 @@
 using System.Threading.Tasks;
 using Memento.Core.HttpClients;
+using Memento.Core.Interfaces.ViewModels.TagViewModels;
 using Memento.Core.ViewModels.DialogViewModels;
 using ReactiveUI.SourceGenerators;
 
 namespace Memento.Core.ViewModels.TagViewModels;
 
-public partial class CreateTagViewModel(ITagHttpClient client) : DialogViewModelBase
+public partial class CreateTagViewModel(ITagHttpClient client) : DialogViewModelBase, ICreateTagViewModel
 {
     [Reactive]
     private TagViewModel _tag = new();
-
-    /// <summary>
-    /// Design-time only constructor
-    /// </summary>
-    public CreateTagViewModel() : this(null!)
-    {
-    }
 
     [ReactiveCommand]
     public async Task SaveTag()

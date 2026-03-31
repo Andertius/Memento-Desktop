@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Memento.Core.Data;
 using Memento.Core.Factories;
 using Memento.Core.HttpClients;
-using Memento.Core.Interfaces;
+using Memento.Core.Interfaces.ViewModels.CategoryViewModels;
 using Memento.Core.Options;
 using Memento.Core.Services;
 using Memento.Core.ViewModels.DialogViewModels;
@@ -15,7 +15,13 @@ using ReactiveUI.SourceGenerators;
 
 namespace Memento.Core.ViewModels.CategoryViewModels;
 
-public partial class ManageCategoriesViewModel : PageViewModel, IDialogProvider
+public partial class ManageCategoriesViewModel(
+    ICategoryHttpClient _categoryClient,
+    ITagHttpClient _tagClient,
+    ICategoryViewModelFactory _categoryViewModelFactory,
+    IDialogService _dialogService,
+    IOptions<ApiClientOptions> options)
+    : PageViewModel(ApplicationPageNames.ManageCategories), IManageCategoriesViewModel
 {
     [Reactive]
     private ObservableCollection<CategoryViewModel> _categories = [];
@@ -26,39 +32,7 @@ public partial class ManageCategoriesViewModel : PageViewModel, IDialogProvider
     [Reactive]
     private DialogViewModelBase? _dialogViewModel;
 
-    private readonly ICategoryHttpClient _categoryClient;
-    private readonly ITagHttpClient _tagClient;
-    private readonly ICategoryViewModelFactory _categoryViewModelFactory;
-    private readonly IDialogService _dialogService;
-    private readonly ApiClientOptions _options;
-
-    /// <summary>
-    /// Design-time only constructor
-    /// </summary>
-    public ManageCategoriesViewModel()
-        : base(ApplicationPageNames.ManageCategories)
-    {
-        _categoryClient = null!;
-        _tagClient = null!;
-        _dialogService = null!;
-        _categoryViewModelFactory = null!;
-        _options = null!;
-    }
-
-    public ManageCategoriesViewModel(
-        ICategoryHttpClient categoryClient,
-        ITagHttpClient tagClient,
-        ICategoryViewModelFactory categoryViewModelFactory,
-        IDialogService dialogService,
-        IOptions<ApiClientOptions> options)
-        : base(ApplicationPageNames.ManageCategories)
-    {
-        _categoryClient = categoryClient;
-        _tagClient = tagClient;
-        _categoryViewModelFactory = categoryViewModelFactory;
-        _dialogService = dialogService;
-        _options = options.Value;
-    }
+    private readonly ApiClientOptions _options = options.Value;
 
     public override async Task OnPageSelected()
     {
