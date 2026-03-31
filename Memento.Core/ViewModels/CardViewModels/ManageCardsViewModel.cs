@@ -26,19 +26,19 @@ public partial class ManageCardsViewModel(
     : PageViewModel(ApplicationPageNames.ManageCards), IManageCardsViewModel
 {
     private readonly ApiClientOptions _options = options.Value;
-    
+
     [Reactive]
     private ObservableCollection<CardViewModel> _cards = [];
-    
+
     [Reactive]
     private IReadOnlyCollection<CategoryViewModel> _categories = [];
-    
+
     [Reactive]
     private IReadOnlyCollection<TagViewModel> _tags = [];
 
     [Reactive]
     private DialogViewModelBase? _dialogViewModel;
-    
+
     public override async Task OnPageSelected()
     {
         var cards = await _cardClient.GetCards();
@@ -65,12 +65,26 @@ public partial class ManageCardsViewModel(
     [ReactiveCommand]
     public async Task EditCardAsync(CardViewModel cardViewModel)
     {
-        var viewModel = _cardViewModelFactory.CreateEditCardViewModel(cardViewModel, Categories, Tags);
+        var viewModel = _cardViewModelFactory.CreateEditCardViewModel(cardViewModel.Clone(), Categories, Tags);
         await _dialogService.ShowDialogAsync(this, viewModel);
+
+        if (viewModel.Canceled)
+        {
+            return;
+        }
 
         if (viewModel.Deleted)
         {
-            Cards.Remove(viewModel.Card);
+            Cards.Remove(cardViewModel);
+
+            return;
+        }
+
+        int index = Cards.IndexOf(cardViewModel);
+
+        if (index != -1)
+        {
+            Cards[index] = viewModel.Card;
         }
     }
 }

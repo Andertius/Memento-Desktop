@@ -14,10 +14,13 @@ using Memento.Core.ViewModels.TagViewModels;
 using Microsoft.Extensions.Options;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using ReactiveUI.Validation.Abstractions;
+using ReactiveUI.Validation.Contexts;
+using ReactiveUI.Validation.Extensions;
 
 namespace Memento.Core.ViewModels.CategoryViewModels;
 
-public partial class EditCategoryViewModel : DialogViewModelBase, IEditCategoryViewModel
+public partial class EditCategoryViewModel : DialogViewModelBase, IEditCategoryViewModel, IValidatableViewModel
 {
     private readonly ApiClientOptions _options;
     private readonly ICategoryHttpClient _client;
@@ -46,13 +49,34 @@ public partial class EditCategoryViewModel : DialogViewModelBase, IEditCategoryV
         _category = category;
         _temporaryImageUrl = Category.ImageUrl;
         _availableTags = tags;
+
+        var wordValidation = this.WhenAnyValue(x => x.Category.Name, name => !String.IsNullOrWhiteSpace(name));
+        var translationValidation = this.WhenAnyValue(x => x.Category.Description, description => !String.IsNullOrWhiteSpace(description));
+
+        var canSave = wordValidation.CombineLatest(translationValidation).Select(notEmpty => notEmpty is { First: true, Second: true });
+        SaveCategoryCommand = ReactiveCommand.CreateFromTask(SaveCategoryAsync, canSave);
+
+        this.ValidationRule(
+            viewModel => viewModel.Category.Name,
+            wordValidation,
+            "Name cannot be empty");
+
+        this.ValidationRule(
+            viewModel => viewModel.Category.Description,
+            translationValidation,
+            "Description cannot be empty");
     }
+
+    public IValidationContext ValidationContext { get; } = new ValidationContext();
 
     public Interaction<Unit, ImageData?> OpenFile { get; } = new();
 
+    public ReactiveCommand<Unit, Unit> SaveCategoryCommand { get; }
+
     public bool Deleted { get; private set; }
 
-    [ReactiveCommand]
+    public bool Canceled { get; private set; }
+
     public async Task SaveCategoryAsync()
     {
         if (Category.UploadedImageData is not null)
@@ -76,6 +100,8 @@ public partial class EditCategoryViewModel : DialogViewModelBase, IEditCategoryV
     {
         Category.ImageUrl = _temporaryImageUrl;
         Category.UploadedImageData = null;
+
+        Canceled = true;
         Close();
     }
 

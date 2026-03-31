@@ -15,5 +15,5 @@ public sealed class CreateTagViewModel : ViewModelBase, ICreateTagViewModel
 
     public ReactiveCommand<Unit, Unit> SaveTagCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
 
-    public ReactiveCommand<Unit, Unit> CancelCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
+    public ReactiveCommand<Unit, Unit> CancelCommand { get; } = ReactiveCommand.Create<Unit, Unit>(_ => Unit.Default);
 }

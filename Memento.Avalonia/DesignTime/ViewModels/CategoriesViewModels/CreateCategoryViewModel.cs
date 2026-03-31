@@ -24,9 +24,9 @@ public sealed class CreateCategoryViewModel : ViewModelBase, ICreateCategoryView
 
     public ReactiveCommand<Unit, Unit> SaveCategoryCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
 
-    public ReactiveCommand<Unit, Unit> CancelCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
+    public ReactiveCommand<Unit, Unit> CancelCommand { get; } = ReactiveCommand.Create<Unit, Unit>(_ => Unit.Default);
 
     public ReactiveCommand<Unit, Unit> UploadImageCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
 
-    public ReactiveCommand<Unit, Unit> DeleteImageCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
+    public ReactiveCommand<Unit, Unit> DeleteImageCommand { get; } = ReactiveCommand.Create<Unit, Unit>(_ => Unit.Default);
 }

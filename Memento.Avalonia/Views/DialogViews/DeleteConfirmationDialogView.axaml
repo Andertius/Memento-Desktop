@@ -2,8 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
-             Width="400" Height="200"
+             mc:Ignorable="d"
+             Width="400" Height="150"
              xmlns:vm="clr-namespace:Memento.Core.ViewModels.DialogViewModels;assembly=Memento.Core"
              Background="{DynamicResource PrimaryBackground}"
              x:Class="Memento.Avalonia.Views.DialogViews.DeleteConfirmationDialogView"
@@ -13,7 +13,7 @@
         <vm:DeleteConfirmationDialogViewModel />
     </Design.DataContext>
 
-    <Border Padding="50">
+    <Border Padding="25">
         <Grid RowDefinitions="* Auto">
             <TextBlock Grid.Row="0"
                        Text="{Binding Message}"
@@ -24,8 +24,8 @@
                         HorizontalAlignment="Right"
                         Orientation="Horizontal"
                         Spacing="15">
-                <Button Content="Confirm" Command="{Binding ConfirmCommand}" />
                 <Button Content="Cancel" Command="{Binding CancelCommand}" />
+                <Button Content="Confirm" Command="{Binding ConfirmCommand}" />
             </StackPanel>
         </Grid>
     </Border>

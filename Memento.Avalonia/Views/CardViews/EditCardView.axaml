@@ -66,11 +66,13 @@
                 <StackPanel Grid.Row="1" Grid.Column="0">
                     <Label Content="Word" Target="WordTextBox" />
                     <TextBox Text="{Binding Card.Word}" x:Name="WordTextBox" />
+                    <TextBlock Foreground="Red" x:Name="WordError"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="1">
                     <Label Content="Translation" Target="TranslationTextBox" />
                     <TextBox Text="{Binding Card.Translation}" x:Name="TranslationTextBox" />
+                    <TextBlock Foreground="Red" x:Name="TranslationError"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Grid.Column="0">
@@ -86,7 +88,7 @@
                 <StackPanel Grid.Row="3" Grid.Column="0">
                     <Label Content="Categories" Target="CategoriesComboBox" />
 
-                    <ComboBox ItemsSource="{Binding AvailableCategories}" x:Name="CategoriesComboBox">
+                    <ComboBox ItemsSource="{Binding AvailableCategories}" x:Name="CategoriesComboBox" Width="300">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <CheckBox Content="{Binding Name}"
@@ -112,7 +114,7 @@
                 <StackPanel Grid.Row="3" Grid.Column="1">
                     <Label Content="Tags" Target="TagsComboBox" />
 
-                    <ComboBox ItemsSource="{Binding AvailableTags}" x:Name="TagsComboBox">
+                    <ComboBox ItemsSource="{Binding AvailableTags}" x:Name="TagsComboBox" Width="300">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <CheckBox Content="{Binding Name}"

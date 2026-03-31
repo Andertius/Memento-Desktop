@@ -13,26 +13,55 @@ using Memento.Core.ViewModels.TagViewModels;
 using Microsoft.Extensions.Options;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using ReactiveUI.Validation.Abstractions;
+using ReactiveUI.Validation.Contexts;
+using ReactiveUI.Validation.Extensions;
 
 namespace Memento.Core.ViewModels.CategoryViewModels;
 
-public partial class CreateCategoryViewModel(
-    ICategoryHttpClient _client,
-    IOptions<ApiClientOptions> options,
-    IEnumerable<TagViewModel> tags)
-    : DialogViewModelBase, ICreateCategoryViewModel
+public partial class CreateCategoryViewModel : DialogViewModelBase, ICreateCategoryViewModel, IValidatableViewModel
 {
-    private readonly ApiClientOptions _options = options.Value;
+    private readonly ApiClientOptions _options;
+    private readonly ICategoryHttpClient _client;
 
     [Reactive]
     private CategoryViewModel _category = new();
 
     [Reactive]
-    private IReadOnlyCollection<TagViewModel> _availableTags = tags.ToList();
+    private IReadOnlyCollection<TagViewModel> _availableTags;
+
+    public CreateCategoryViewModel(
+        ICategoryHttpClient client,
+        IOptions<ApiClientOptions> options,
+        IEnumerable<TagViewModel> tags)
+    {
+        _client = client;
+        _options = options.Value;
+        _availableTags = tags.ToList();
+
+        var nameValidation = this.WhenAnyValue(x => x.Category.Name, name => !String.IsNullOrWhiteSpace(name));
+        var descriptionValidation = this.WhenAnyValue(x => x.Category.Description, description => !String.IsNullOrWhiteSpace(description));
+
+        var canSave = nameValidation.CombineLatest(descriptionValidation).Select(notEmpty => notEmpty is { First: true, Second: true });
+        SaveCategoryCommand = ReactiveCommand.CreateFromTask(SaveCategoryAsync, canSave);
+
+        this.ValidationRule(
+            viewModel => viewModel.Category.Name,
+            nameValidation,
+            "Name cannot be empty");
+
+        this.ValidationRule(
+            viewModel => viewModel.Category.Description,
+            descriptionValidation,
+            "Description cannot be empty");
+    }
+
+    public IValidationContext ValidationContext { get; } = new ValidationContext();
 
     public Interaction<Unit, ImageData?> OpenFile { get; } = new();
 
-    [ReactiveCommand]
+    public ReactiveCommand<Unit, Unit> SaveCategoryCommand { get; }
+
     public async Task SaveCategoryAsync()
     {
         var category = Category.ToDataModel();

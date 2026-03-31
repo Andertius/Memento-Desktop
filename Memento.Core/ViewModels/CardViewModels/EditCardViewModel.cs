@@ -15,10 +15,13 @@ using Memento.Core.ViewModels.TagViewModels;
 using Microsoft.Extensions.Options;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using ReactiveUI.Validation.Abstractions;
+using ReactiveUI.Validation.Contexts;
+using ReactiveUI.Validation.Extensions;
 
 namespace Memento.Core.ViewModels.CardViewModels;
 
-public partial class EditCardViewModel : DialogViewModelBase, IEditCardViewModel
+public partial class EditCardViewModel : DialogViewModelBase, IEditCardViewModel, IValidatableViewModel
 {
     private readonly ApiClientOptions _options;
     private readonly ICardHttpClient _client;
@@ -36,7 +39,7 @@ public partial class EditCardViewModel : DialogViewModelBase, IEditCardViewModel
 
     [Reactive]
     private IReadOnlyCollection<TagViewModel> _availableTags;
-    
+
     public EditCardViewModel(
         ICardHttpClient client,
         IDialogService dialogService,
@@ -52,13 +55,34 @@ public partial class EditCardViewModel : DialogViewModelBase, IEditCardViewModel
         _temporaryImageUrl = Card.ImageUrl;
         _availableCategories = categories;
         _availableTags = tags;
+
+        var wordValidation = this.WhenAnyValue(x => x.Card.Word, word => !String.IsNullOrWhiteSpace(word));
+        var translationValidation = this.WhenAnyValue(x => x.Card.Translation, translation => !String.IsNullOrWhiteSpace(translation));
+
+        var canSave = wordValidation.CombineLatest(translationValidation).Select(notEmpty => notEmpty is { First: true, Second: true });
+        SaveCardCommand = ReactiveCommand.CreateFromTask(SaveCardAsync, canSave);
+
+        this.ValidationRule(
+            viewModel => viewModel.Card.Word,
+            wordValidation,
+            "Word cannot be empty");
+
+        this.ValidationRule(
+            viewModel => viewModel.Card.Translation,
+            translationValidation,
+            "Translation cannot be empty");
     }
+
+    public IValidationContext ValidationContext { get; } = new ValidationContext();
 
     public Interaction<Unit, ImageData?> OpenFile { get; } = new();
 
+    public ReactiveCommand<Unit, Unit> SaveCardCommand { get; }
+
     public bool Deleted { get; private set; }
 
-    [ReactiveCommand]
+    public bool Canceled { get; private set; }
+
     public async Task SaveCardAsync()
     {
         if (Card.UploadedImageData is not null)
@@ -83,6 +107,8 @@ public partial class EditCardViewModel : DialogViewModelBase, IEditCardViewModel
     {
         Card.ImageUrl = _temporaryImageUrl;
         Card.UploadedImageData = null;
+
+        Canceled = true;
         Close();
     }
 

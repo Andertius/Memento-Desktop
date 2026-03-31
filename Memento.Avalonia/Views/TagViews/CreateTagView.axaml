@@ -30,6 +30,7 @@
             <StackPanel Grid.Row="0" Grid.Column="0">
                 <Label Content="Name" Target="NameTextBox" />
                 <TextBox Text="{Binding Tag.Name}" x:Name="NameTextBox" />
+                <TextBlock Foreground="Red" x:Name="NameError"/>
             </StackPanel>
 
             <StackPanel Grid.Row="1"

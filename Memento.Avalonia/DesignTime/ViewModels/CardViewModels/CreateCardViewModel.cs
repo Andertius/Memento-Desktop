@@ -33,9 +33,9 @@ public sealed class CreateCardViewModel : ViewModelBase, ICreateCardViewModel
 
     public ReactiveCommand<Unit, Unit> SaveCardCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
 
-    public ReactiveCommand<Unit, Unit> CancelCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
+    public ReactiveCommand<Unit, Unit> CancelCommand { get; } = ReactiveCommand.Create<Unit, Unit>(_ => Unit.Default);
 
     public ReactiveCommand<Unit, Unit> UploadImageCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
 
-    public ReactiveCommand<Unit, Unit> DeleteImageCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
+    public ReactiveCommand<Unit, Unit> DeleteImageCommand { get; } = ReactiveCommand.Create<Unit, Unit>(_ => Unit.Default);
 }

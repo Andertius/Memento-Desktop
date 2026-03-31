@@ -19,7 +19,7 @@ public sealed class EditTagViewModel : ViewModelBase, IEditTagViewModel
 
     public ReactiveCommand<Unit, Unit> SaveTagCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
 
-    public ReactiveCommand<Unit, Unit> CancelCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
+    public ReactiveCommand<Unit, Unit> CancelCommand { get; } = ReactiveCommand.Create<Unit, Unit>(_ => Unit.Default);
 
     public ReactiveCommand<Unit, Unit> DeleteTagCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
 }

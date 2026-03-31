@@ -10,6 +10,7 @@ using Memento.Core.ViewModels.CategoryViewModels;
 using Memento.Core.ViewModels.TagViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
+using ReactiveUI.Validation.Extensions;
 
 namespace Memento.Avalonia.Views.CardViews;
 
@@ -31,6 +32,12 @@ public partial class CreateCardView : ReactiveUserControl<CreateCardViewModel>
                 var result = await FileHandler.OpenImage(this);
                 context.SetOutput(result);
             }).DisposeWith(disposables);
+
+            this.BindValidation(ViewModel, vm => vm.Card.Word, view => view.WordError.Text)
+                .DisposeWith(disposables);
+
+            this.BindValidation(ViewModel, vm => vm.Card.Translation, view => view.TranslationError.Text)
+                .DisposeWith(disposables);
         });
     }
 

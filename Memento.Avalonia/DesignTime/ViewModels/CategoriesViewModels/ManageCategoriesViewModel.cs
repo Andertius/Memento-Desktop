@@ -26,7 +26,6 @@ public sealed class ManageCategoriesViewModel : ViewModelBase, IManageCategories
         new()
         {
             Name = "Name 2",
-            Tags = [new Tag { Name = "Tag" }],
         },
     ];
 

@@ -17,6 +17,12 @@ public partial class TagViewModel : ViewModelBase
         Name = tag.Name,
     };
 
+    public TagViewModel Clone() => new()
+    {
+        Id = Id,
+        Name = Name,
+    };
+
     public Tag ToDataModel() => new()
     {
         Id = Id,

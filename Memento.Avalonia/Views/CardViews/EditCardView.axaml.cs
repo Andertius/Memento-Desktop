@@ -10,6 +10,7 @@ using Memento.Core.ViewModels.CategoryViewModels;
 using Memento.Core.ViewModels.TagViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
+using ReactiveUI.Validation.Extensions;
 
 namespace Memento.Avalonia.Views.CardViews;
 
@@ -25,11 +26,19 @@ public partial class EditCardView : ReactiveUserControl<EditCardViewModel>
         }
 
         this.WhenActivated(disposables =>
+        {
             ViewModel!.OpenFile.RegisterHandler(async context =>
             {
                 var result = await FileHandler.OpenImage(this);
                 context.SetOutput(result);
-            }).DisposeWith(disposables));
+            }).DisposeWith(disposables);
+
+            this.BindValidation(ViewModel, vm => vm.Card.Word, view => view.WordError.Text)
+                .DisposeWith(disposables);
+
+            this.BindValidation(ViewModel, vm => vm.Card.Translation, view => view.TranslationError.Text)
+                .DisposeWith(disposables);
+        });
     }
 
     private void OnCategoryCheckedChanged(object? sender, RoutedEventArgs e)

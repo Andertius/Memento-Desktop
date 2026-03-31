@@ -16,6 +16,7 @@
 
     <Window.Resources>
         <converters:ActivePageConverter x:Key="ActivePageConverter" />
+        <converters:InactivePageConverter x:Key="InactivePageConverter" />
     </Window.Resources>
 
     <Grid Background="{DynamicResource PrimaryBackground}" ColumnDefinitions="300, *">
@@ -28,31 +29,36 @@
                             Classes.active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.HomePage}}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{x:Static data:ApplicationPageNames.HomePage}" />
+                            CommandParameter="{x:Static data:ApplicationPageNames.HomePage}"
+                            IsEnabled="{Binding CurrentPage, Converter={StaticResource InactivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.HomePage}}"/>
 
                     <Button Content="Learn"
                             Classes.active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.Learn}}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{x:Static data:ApplicationPageNames.Learn}" />
+                            CommandParameter="{x:Static data:ApplicationPageNames.Learn}"
+                            IsEnabled="{Binding CurrentPage, Converter={StaticResource InactivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.Learn}}"/>
 
                     <Button Content="Manage Cards"
                             Classes.active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.ManageCards}}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{x:Static data:ApplicationPageNames.ManageCards}" />
+                            CommandParameter="{x:Static data:ApplicationPageNames.ManageCards}"
+                            IsEnabled="{Binding CurrentPage, Converter={StaticResource InactivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.ManageCards}}"/>
 
                     <Button Content="Manage Categories"
                             Classes.active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.ManageCategories}}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{x:Static data:ApplicationPageNames.ManageCategories}" />
+                            CommandParameter="{x:Static data:ApplicationPageNames.ManageCategories}"
+                            IsEnabled="{Binding CurrentPage, Converter={StaticResource InactivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.ManageCategories}}"/>
 
                     <Button Content="Manage Tags"
                             Classes.active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.ManageTags}}"
                             HorizontalAlignment="Stretch"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{x:Static data:ApplicationPageNames.ManageTags}" />
+                            CommandParameter="{x:Static data:ApplicationPageNames.ManageTags}"
+                            IsEnabled="{Binding CurrentPage, Converter={StaticResource InactivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.ManageTags}}"/>
                 </StackPanel>
 
                 <Grid Grid.Row="1" ColumnDefinitions="* Auto Auto">
@@ -64,7 +70,8 @@
                             Classes="transparent"
                             Classes.transparent-active="{Binding CurrentPage, Converter={StaticResource ActivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.Settings}}"
                             Command="{Binding GoToPageCommand}"
-                            CommandParameter="{x:Static data:ApplicationPageNames.Settings}">
+                            CommandParameter="{x:Static data:ApplicationPageNames.Settings}"
+                            IsEnabled="{Binding CurrentPage, Converter={StaticResource InactivePageConverter}, ConverterParameter={x:Static data:ApplicationPageNames.Settings}}">
                         <materialIcons:MaterialIcon Kind="SettingsOutline" FontSize="20" />
                     </Button>
 

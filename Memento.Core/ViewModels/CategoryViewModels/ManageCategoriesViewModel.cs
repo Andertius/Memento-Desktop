@@ -56,14 +56,28 @@ public partial class ManageCategoriesViewModel(
     }
 
     [ReactiveCommand]
-    public async Task EditCategoryAsync(CategoryViewModel cardViewModel)
+    public async Task EditCategoryAsync(CategoryViewModel categoryViewModel)
     {
-        var viewModel = _categoryViewModelFactory.CreateEditCategoryViewModel(cardViewModel, Tags);
+        var viewModel = _categoryViewModelFactory.CreateEditCategoryViewModel(categoryViewModel.Clone(), Tags);
         await _dialogService.ShowDialogAsync(this, viewModel);
+
+        if (viewModel.Canceled)
+        {
+            return;
+        }
 
         if (viewModel.Deleted)
         {
             Categories.Remove(viewModel.Category);
+
+            return;
+        }
+
+        int index = Categories.IndexOf(categoryViewModel);
+
+        if (index != -1)
+        {
+            Categories[index] = viewModel.Category;
         }
     }
 }

@@ -41,14 +41,28 @@ public partial class ManageTagsViewModel(
     }
 
     [ReactiveCommand]
-    public async Task EditTagAsync(TagViewModel cardViewModel)
+    public async Task EditTagAsync(TagViewModel tagViewModel)
     {
-        var viewModel = _tagViewModelFactory.CreateEditTagViewModel(cardViewModel);
+        var viewModel = _tagViewModelFactory.CreateEditTagViewModel(tagViewModel.Clone());
         await _dialogService.ShowDialogAsync(this, viewModel);
+
+        if (viewModel.Canceled)
+        {
+            return;
+        }
 
         if (viewModel.Deleted)
         {
             Tags.Remove(viewModel.Tag);
+
+            return;
+        }
+
+        int index = Tags.IndexOf(tagViewModel);
+
+        if (index != -1)
+        {
+            Tags[index] = viewModel.Tag;
         }
     }
 }

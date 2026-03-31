@@ -46,6 +46,15 @@ public partial class CategoryViewModel : ViewModelBase
         Tags = category.Tags,
     };
 
+    public CategoryViewModel Clone() => new()
+    {
+        Id = Id,
+        Name = Name,
+        Description = Description,
+        ImageUrl = ImageUrl,
+        Tags = Tags,
+    };
+
     public Category ToDataModel() => new()
     {
         Id = Id,
@@ -57,5 +66,5 @@ public partial class CategoryViewModel : ViewModelBase
     private static string CalculateCombinedTags(IReadOnlyCollection<Tag> tags)
         => tags.Count == 0
             ? ""
-            : "Tags: " + String.Join(", ", tags.Select(x => x.Name));
+            : String.Join(", ", tags.Select(x => x.Name));
 }

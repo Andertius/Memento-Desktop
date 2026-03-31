@@ -39,9 +39,9 @@ public sealed class EditCardViewModel : ViewModelBase, IEditCardViewModel
 
     public ReactiveCommand<Unit, Unit> DeleteCardCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
 
-    public ReactiveCommand<Unit, Unit> CancelCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
+    public ReactiveCommand<Unit, Unit> CancelCommand { get; } = ReactiveCommand.Create<Unit, Unit>(_ => Unit.Default);
 
     public ReactiveCommand<Unit, Unit> UploadImageCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
 
-    public ReactiveCommand<Unit, Unit> DeleteImageCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
+    public ReactiveCommand<Unit, Unit> DeleteImageCommand { get; } = ReactiveCommand.Create<Unit, Unit>(_ => Unit.Default);
 }

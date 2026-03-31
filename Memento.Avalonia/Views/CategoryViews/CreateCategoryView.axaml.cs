@@ -9,6 +9,7 @@ using Memento.Core.ViewModels.CategoryViewModels;
 using Memento.Core.ViewModels.TagViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
+using ReactiveUI.Validation.Extensions;
 
 namespace Memento.Avalonia.Views.CategoryViews;
 
@@ -24,11 +25,19 @@ public partial class CreateCategoryView : ReactiveUserControl<CreateCategoryView
         }
 
         this.WhenActivated(disposables =>
+        {
             ViewModel!.OpenFile.RegisterHandler(async context =>
             {
                 var result = await FileHandler.OpenImage(this);
                 context.SetOutput(result);
-            }).DisposeWith(disposables));
+            }).DisposeWith(disposables);
+
+            this.BindValidation(ViewModel, vm => vm.Category.Name, view => view.NameError.Text)
+                .DisposeWith(disposables);
+
+            this.BindValidation(ViewModel, vm => vm.Category.Description, view => view.DescriptionError.Text)
+                .DisposeWith(disposables);
+        });
     }
 
     private void OnTagCheckedChanged(object? sender, RoutedEventArgs e)

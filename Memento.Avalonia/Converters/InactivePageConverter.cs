@@ -7,11 +7,11 @@ using Memento.Core.Interfaces.ViewModels;
 
 namespace Memento.Avalonia.Converters;
 
-public sealed class ActivePageConverter : IValueConverter
+public sealed class InactivePageConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         => value is IPageViewModel viewModel && parameter is ApplicationPageNames pageName
-            ? viewModel.PageName == pageName
+            ? viewModel.PageName != pageName
             : new BindingNotification(new InvalidCastException(), BindingErrorType.Error);
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

@@ -64,6 +64,18 @@ public partial class CardViewModel : ViewModelBase
         Tags = card.Tags,
     };
 
+    public CardViewModel Clone() => new()
+    {
+        Id = Id,
+        Word = Word,
+        Translation = Translation,
+        Definition = Definition,
+        Hint = Hint,
+        ImageUrl = ImageUrl,
+        Categories = Categories,
+        Tags = Tags,
+    };
+
     public Card ToDataModel() => new()
     {
         Id = Id,
@@ -78,10 +90,10 @@ public partial class CardViewModel : ViewModelBase
     private static string CalculateCombinedCategories(IReadOnlyCollection<Category> categories)
         => categories.Count == 0
             ? ""
-            : "Categories: " + String.Join(", ", categories.Select(x => x.Name));
+            : String.Join(", ", categories.Select(x => x.Name));
 
     private static string CalculateCombinedTags(IReadOnlyCollection<Tag> tags)
         => tags.Count == 0
             ? ""
-            : "Tags: " + String.Join(", ", tags.Select(x => x.Name));
+            : String.Join(", ", tags.Select(x => x.Name));
 }

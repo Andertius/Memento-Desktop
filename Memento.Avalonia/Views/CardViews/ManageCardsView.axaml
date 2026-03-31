@@ -3,16 +3,24 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:vm="clr-namespace:Memento.Core.ViewModels.CardViewModels;assembly=Memento.Core"
              xmlns:interfaces="clr-namespace:Memento.Core.Interfaces.ViewModels.CardViewModels;assembly=Memento.Core"
              xmlns:labs="clr-namespace:Avalonia.Labs.Controls;assembly=Avalonia.Labs.Controls"
+             xmlns:converters="clr-namespace:Memento.Avalonia.Converters"
              xmlns:dd="clr-namespace:Memento.Avalonia.DesignTime"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
              Background="{DynamicResource PrimaryBackground}"
              d:DataContext="{x:Static dd:DesignData.ManageCardsViewModel}"
              x:Class="Memento.Avalonia.Views.CardViews.ManageCardsView"
              x:DataType="interfaces:IManageCardsViewModel"
              x:Name="CardsList">
+
+    <UserControl.Resources>
+        <converters:EmptyStringIfEmptyConverter x:Key="EmptyStringIfEmptyConverter" />
+        <system:String x:Key="CategoriesString">Categories: </system:String>
+        <system:String x:Key="TagsString">Tags: </system:String>
+    </UserControl.Resources>
 
     <Grid>
         <Border Padding="20">
@@ -63,8 +71,18 @@
                                         </Panel>
 
                                         <TextBlock Text="{Binding Word}" HorizontalAlignment="Center" FontSize="22" />
-                                        <TextBlock Text="{Binding CombinedCategories}" />
-                                        <TextBlock Text="{Binding CombinedTags}" />
+
+                                        <Separator />
+
+                                        <StackPanel Orientation="Horizontal" Margin="10 0">
+                                            <TextBlock Text="{Binding CombinedCategories, Converter={StaticResource EmptyStringIfEmptyConverter}, ConverterParameter={StaticResource CategoriesString}}" />
+                                            <TextBlock Text="{Binding CombinedCategories}" />
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Margin="10 0">
+                                            <TextBlock Text="{Binding CombinedTags, Converter={StaticResource EmptyStringIfEmptyConverter}, ConverterParameter={StaticResource TagsString}}" />
+                                            <TextBlock Text="{Binding CombinedTags}" />
+                                        </StackPanel>
                                     </StackPanel>
                                 </Button>
                             </DataTemplate>

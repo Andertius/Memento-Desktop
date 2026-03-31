@@ -29,7 +29,10 @@ public sealed class ManageCardsViewModel : ViewModelBase, IManageCardsViewModel
         {
             Word = "Word 2",
             Categories = [new Category { Name = "Category" }],
-            Tags = [new Tag { Name = "Tag" }],
+        },
+        new()
+        {
+            Word = "Word 3",
         },
     ];
 

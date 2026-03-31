@@ -63,17 +63,19 @@
             <StackPanel Grid.Row="1" Grid.Column="0">
                 <Label Content="Name" Target="NameTextBox" />
                 <TextBox Text="{Binding Category.Name}" x:Name="NameTextBox" />
+                <TextBlock Foreground="Red" x:Name="NameError"/>
             </StackPanel>
 
             <StackPanel Grid.Row="1" Grid.Column="1">
                 <Label Content="Description" Target="DescriptionTextBox" />
                 <TextBox Text="{Binding Category.Description}" x:Name="DescriptionTextBox" />
+                <TextBlock Foreground="Red" x:Name="DescriptionError"/>
             </StackPanel>
 
             <StackPanel Grid.Row="2" Grid.Column="0">
                 <Label Content="Tags" Target="TagsComboBox" />
 
-                <ComboBox ItemsSource="{Binding AvailableTags}" x:Name="TagsComboBox">
+                <ComboBox ItemsSource="{Binding AvailableTags}" x:Name="TagsComboBox" Width="300">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <CheckBox Content="{Binding Name}"
