@@ -45,6 +45,9 @@ public partial class CreateCategoryViewModel : DialogViewModelBase, ICreateCateg
         var canSave = nameValidation.CombineLatest(descriptionValidation).Select(notEmpty => notEmpty is { First: true, Second: true });
         SaveCategoryCommand = ReactiveCommand.CreateFromTask(SaveCategoryAsync, canSave);
 
+        var canDeleteImage = Category.WhenAnyValue<CategoryViewModel, bool, Uri?>(x => x.ImageUrl, uri => uri is not null);
+        DeleteImageCommand = ReactiveCommand.Create(DeleteImage, canDeleteImage);
+
         this.ValidationRule(
             viewModel => viewModel.Category.Name,
             nameValidation,
@@ -61,6 +64,8 @@ public partial class CreateCategoryViewModel : DialogViewModelBase, ICreateCateg
     public Interaction<Unit, ImageData?> OpenFile { get; } = new();
 
     public ReactiveCommand<Unit, Unit> SaveCategoryCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> DeleteImageCommand { get; }
 
     public async Task SaveCategoryAsync()
     {
@@ -96,7 +101,6 @@ public partial class CreateCategoryViewModel : DialogViewModelBase, ICreateCateg
         }
     }
 
-    [ReactiveCommand]
     public void DeleteImage()
     {
         Category.UploadedImageData = null;

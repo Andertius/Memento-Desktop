@@ -50,6 +50,9 @@ public partial class CreateCardViewModel : DialogViewModelBase, ICreateCardViewM
         var canSave = wordValidation.CombineLatest(translationValidation).Select(notEmpty => notEmpty is { First: true, Second: true });
         SaveCardCommand = ReactiveCommand.CreateFromTask(SaveCardAsync, canSave);
 
+        var canDeleteImage = Card.WhenAnyValue<CardViewModel, bool, Uri?>(x => x.ImageUrl, uri => uri is not null);
+        DeleteImageCommand = ReactiveCommand.Create(DeleteImage, canDeleteImage);
+
         this.ValidationRule(
             viewModel => viewModel.Card.Word,
             wordValidation,
@@ -66,6 +69,8 @@ public partial class CreateCardViewModel : DialogViewModelBase, ICreateCardViewM
     public Interaction<Unit, ImageData> OpenFile { get; } = new();
 
     public ReactiveCommand<Unit, Unit> SaveCardCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> DeleteImageCommand { get; }
 
     public async Task SaveCardAsync()
     {
@@ -101,7 +106,6 @@ public partial class CreateCardViewModel : DialogViewModelBase, ICreateCardViewM
         }
     }
 
-    [ReactiveCommand]
     public void DeleteImage()
     {
         Card.UploadedImageData = null;
