@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Memento.Core.Interfaces.ViewModels.LearnViewModels;assembly=Memento.Core"
+             xmlns:dd="clr-namespace:Memento.Avalonia.DesignTime"
+             xmlns:converters="clr-namespace:Memento.Avalonia.Converters"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             Background="{DynamicResource PrimaryBackground}"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             d:DataContext="{x:Static dd:DesignData.MainLearnViewModel}"
+             x:Class="Memento.Avalonia.Views.LearnViews.LearnMainView"
+             x:Name="LearnControl"
+             x:DataType="vm:IMainLearnViewModel">
+
+    <UserControl.Resources>
+        <converters:ComboBoxConverter x:Key="ComboBoxConverter" />
+    </UserControl.Resources>
+
+    <Border Padding="25">
+        <Grid RowDefinitions="Auto *" RowSpacing="30">
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="25">
+                <ComboBox ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" Width="300">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <ComboBox ItemsSource="{Binding Tags}" x:Name="TagsComboBox" Width="300">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox Content="{Binding Name}"
+                                      IsCheckedChanged="OnTagCheckedChanged">
+                                <CheckBox.IsChecked>
+                                    <MultiBinding Converter="{StaticResource ComboBoxConverter}">
+                                        <Binding Path="Id" />
+                                        <Binding Path="DataContext.SelectedTags" ElementName="LearnControl" FallbackValue="{x:Null}" />
+                                    </MultiBinding>
+                                </CheckBox.IsChecked>
+                            </CheckBox>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+
+                    <ComboBox.SelectionBoxItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ElementName=LearnControl, Path=DataContext.CombinedTags, FallbackValue={x:Static sys:String.Empty}}" />
+                        </DataTemplate>
+                    </ComboBox.SelectionBoxItemTemplate>
+                </ComboBox>
+
+                <Button Content="Start" Command="{Binding StartLearnCommand}" />
+            </StackPanel>
+
+            <TextBlock Grid.Row="1" Foreground="Red" Text="{Binding Error}" />
+
+            <ContentControl Grid.Row="1"
+                            IsVisible="{Binding DialogViewModel.IsDialogOpen, FallbackValue=false}"
+                            Content="{Binding DialogViewModel}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+        </Grid>
+    </Border>
+</UserControl>

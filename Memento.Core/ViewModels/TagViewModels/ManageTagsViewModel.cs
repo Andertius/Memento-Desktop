@@ -53,7 +53,7 @@ public partial class ManageTagsViewModel(
 
         if (viewModel.Deleted)
         {
-            Tags.Remove(viewModel.Tag);
+            Tags.Remove(tagViewModel);
 
             return;
         }

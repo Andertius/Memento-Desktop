@@ -87,7 +87,7 @@
         </Border>
 
         <Grid IsVisible="{Binding DialogViewModel.IsDialogOpen, FallbackValue=false}">
-            <Border Padding="25" Background="Black" Opacity="0.5" />
+            <Border Padding="25" />
 
             <ContentControl Content="{Binding DialogViewModel}"
                             HorizontalAlignment="Center"

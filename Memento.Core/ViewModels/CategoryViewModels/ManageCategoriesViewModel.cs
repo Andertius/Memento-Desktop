@@ -68,7 +68,7 @@ public partial class ManageCategoriesViewModel(
 
         if (viewModel.Deleted)
         {
-            Categories.Remove(viewModel.Category);
+            Categories.Remove(categoryViewModel);
 
             return;
         }

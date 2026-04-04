@@ -64,6 +64,10 @@
             <DependentUpon>ManageCategoriesView.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\LearnViews\LearnMainView.axaml.cs">
+          <DependentUpon>LearnView.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>

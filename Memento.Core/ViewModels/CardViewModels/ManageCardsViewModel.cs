@@ -41,7 +41,7 @@ public partial class ManageCardsViewModel(
 
     public override async Task OnPageSelected()
     {
-        var cards = await _cardClient.GetCards();
+        var cards = await _cardClient.GetAllCards();
         var categories = await _categoryClient.GetCategories();
         var tags = await _tagClient.GetTags();
 

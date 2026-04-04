@@ -1,6 +1,7 @@
 using Memento.Avalonia.DesignTime.ViewModels;
 using Memento.Avalonia.DesignTime.ViewModels.CardViewModels;
 using Memento.Avalonia.DesignTime.ViewModels.CategoriesViewModels;
+using Memento.Avalonia.DesignTime.ViewModels.LearnViewModels;
 using Memento.Avalonia.DesignTime.ViewModels.TagViewModels;
 
 namespace Memento.Avalonia.DesignTime;
@@ -10,7 +11,8 @@ public static partial class DesignData
     public static MainViewModel MainViewModel { get; } = new();
     public static HomePageViewModel HomePageViewModel { get; } = new();
     public static SettingsViewModel SettingsViewModel { get; } = new();
-    public static LearnViewModel LearnViewModel { get; } = new();
+    public static MainLearnViewModel MainLearnViewModel { get; } = new();
+    public static LearnDialogViewModel LearnDialogViewModel { get; } = new();
 
     public static CreateCardViewModel CreateCardViewModel { get; set; } = new();
     public static EditCardViewModel EditCardViewModel { get; set; } = new();

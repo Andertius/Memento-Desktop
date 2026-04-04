@@ -10,6 +10,7 @@ using Memento.Core.Services;
 using Memento.Core.ViewModels;
 using Memento.Core.ViewModels.CardViewModels;
 using Memento.Core.ViewModels.CategoryViewModels;
+using Memento.Core.ViewModels.LearnViewModels;
 using Memento.Core.ViewModels.TagViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,7 +47,7 @@ public static class ServiceCollectionExtensions
             services.AddSingleton<MainViewModel>();
             services.AddTransient<HomePageViewModel>();
             services.AddTransient<SettingsViewModel>();
-            services.AddTransient<LearnViewModel>();
+            services.AddTransient<MainLearnViewModel>();
             services.AddTransient<ManageCardsViewModel>();
             services.AddTransient<ManageCategoriesViewModel>();
             services.AddTransient<ManageTagsViewModel>();
@@ -64,7 +65,7 @@ public static class ServiceCollectionExtensions
             services.AddSingleton<Func<ApplicationPageNames, PageViewModel>>(sp => name => name switch
             {
                 ApplicationPageNames.HomePage => sp.GetRequiredService<HomePageViewModel>(),
-                ApplicationPageNames.Learn => sp.GetRequiredService<LearnViewModel>(),
+                ApplicationPageNames.Learn => sp.GetRequiredService<MainLearnViewModel>(),
                 ApplicationPageNames.Settings => sp.GetRequiredService<SettingsViewModel>(),
                 ApplicationPageNames.ManageCards => sp.GetRequiredService<ManageCardsViewModel>(),
                 ApplicationPageNames.ManageCategories => sp.GetRequiredService<ManageCategoriesViewModel>(),

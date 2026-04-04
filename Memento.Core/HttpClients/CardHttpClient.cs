@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
 using Memento.Core.Data;
 using Memento.Core.DataModels;
 using Memento.Core.Responses;
@@ -16,7 +17,9 @@ namespace Memento.Core.HttpClients;
 
 public interface ICardHttpClient
 {
-    Task<List<Card>> GetCards();
+    Task<List<Card>> GetAllCards();
+
+    Task<List<Card>> GetCards(int? categoryId = null, IReadOnlyCollection<int>? tagIds = null);
 
     Task<int> AddCard(Card card);
 
@@ -51,10 +54,29 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
         return (await response.Content.ReadFromJsonAsync<TokenResponse>())!.AccessToken;
     }
 
-    public async Task<List<Card>> GetCards()
+    public async Task<List<Card>> GetAllCards()
     {
         string token = await GetToken();
-        using var request = new HttpRequestMessage(HttpMethod.Get, ApiPaths.CardsApiPath);
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"{ApiPaths.CardsApiPath}/all");
+
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await _client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadFromJsonAsync<List<Card>>() ?? [];
+    }
+
+    public async Task<List<Card>> GetCards(int? categoryId = null, IReadOnlyCollection<int>? tagIds = null)
+    {
+        string token = await GetToken();
+
+        var query = HttpUtility.ParseQueryString("");
+        query[nameof(categoryId)] = categoryId?.ToString();
+        query[nameof(tagIds)] = tagIds is { Count: > 0 } ? String.Join(',', tagIds) : "[]";
+        string? queryString = query.ToString();
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"{ApiPaths.CardsApiPath}?{queryString}");
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 

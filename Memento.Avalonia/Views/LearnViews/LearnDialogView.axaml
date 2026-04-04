@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Memento.Core.Interfaces.ViewModels.LearnViewModels;assembly=Memento.Core"
+             xmlns:dd="clr-namespace:Memento.Avalonia.DesignTime"
+             xmlns:labs="clr-namespace:Avalonia.Labs.Controls;assembly=Avalonia.Labs.Controls"
+             Background="{DynamicResource PrimaryBackground}"
+             Width="800" Height="700"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
+             d:DataContext="{x:Static dd:DesignData.LearnDialogViewModel}"
+             x:DataType="vm:ILearnDialogViewModel"
+             x:Class="Memento.Avalonia.Views.LearnViews.LearnDialogView">
+
+    <Border BorderBrush="{DynamicResource ItemBorderBrush}"
+            BorderThickness="5"
+            CornerRadius="7"
+            ClipToBounds="True"
+            Padding="25">
+        <Grid RowDefinitions="Auto Auto * Auto" RowSpacing="20">
+            <TextBlock Grid.Row="0"
+                       Text="{Binding CurrentCard.Word}"
+                       FontSize="48"
+                       HorizontalAlignment="Center" />
+
+            <StackPanel Grid.Row="1" Spacing="20">
+                <Button Content="Show hint" Command="{Binding ShowHintCommand}" />
+
+                <TextBlock Text="{Binding Hint}" Foreground="Wheat" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        Spacing="25"
+                        HorizontalAlignment="Center"
+                        IsVisible="{Binding FaceDown}">
+                <Panel Height="350" Width="350">
+                    <Rectangle Fill="{DynamicResource ImageBackdrop}" />
+
+                    <labs:AsyncImage PlaceholderSource="/Assets/placeholder.png"
+                                     Margin="20"
+                                     MaxHeight="350"
+                                     MaxWidth="350"
+                                     Source="{Binding ImageUrl}" />
+                </Panel>
+
+                <Separator Height="NaN" Width="1" />
+
+                <StackPanel Spacing="15" VerticalAlignment="Center">
+                    <TextBlock Text="Translation:" Margin="20 00" />
+                    <TextBlock Text="{Binding CurrentCard.Translation}" Margin="20 00" />
+                    <Separator Width="250" />
+                    <TextBlock Text="Definition:" Margin="20 00" />
+                    <TextBlock Text="{Binding CurrentCard.Definition}" Margin="20 00" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="15" HorizontalAlignment="Right">
+                <Button Content="I know it!" Command="{Binding FlipCardCommand}" IsVisible="{Binding !FaceDown}" />
+                <Button Content="Can't remember" Command="{Binding FlipCardCommand}" IsVisible="{Binding !FaceDown}" />
+                <Button Content="Next card" Command="{Binding MoveNextCommand}" IsVisible="{Binding FaceDown}" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>
