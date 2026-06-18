@@ -40,7 +40,13 @@ public sealed class ManageCardsViewModel : ViewModelBase, IManageCardsViewModel
 
     public IReadOnlyCollection<TagViewModel> Tags { get; set; } = [];
 
+    public string? Filter { get; set; }
+
     public ReactiveCommand<Unit, Unit> CreateCardCommand { get; } = ReactiveCommand.CreateFromTask(_ => Task.FromResult(Unit.Default));
 
     public ReactiveCommand<CardViewModel, Unit> EditCardCommand { get; } = ReactiveCommand.CreateFromTask<CardViewModel, Unit>(_ => Task.FromResult(Unit.Default));
+
+    public ReactiveCommand<string?, Unit> LoadFilteredCardsCommand { get; } = ReactiveCommand.CreateFromTask<string?, Unit>(_ => Task.FromResult(Unit.Default));
+
+    public ReactiveCommand<Unit, Unit> LoadNextCardsCommand { get; } = ReactiveCommand.CreateFromTask<Unit, Unit>(_ => Task.FromResult(Unit.Default));
 }

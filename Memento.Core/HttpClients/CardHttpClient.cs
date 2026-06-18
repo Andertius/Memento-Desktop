@@ -10,14 +10,20 @@ using System.Threading.Tasks;
 using System.Web;
 using Memento.Core.Data;
 using Memento.Core.DataModels;
+using Memento.Core.Mappers;
+using Memento.Core.Options;
 using Memento.Core.Responses;
 using Memento.Core.Services;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace Memento.Core.HttpClients;
 
 public interface ICardHttpClient
 {
-    Task<List<Card>> GetAllCards();
+    Task<List<Card>> GetAllCards(string? filter, int currentPage, int pageSize);
 
     Task<List<Card>> GetCards(int? categoryId = null, IReadOnlyCollection<int>? tagIds = null);
 
@@ -36,32 +42,51 @@ public interface ICardHttpClient
     Task DeleteImage(int cardId);
 }
 
-public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHttpClient, IDisposable
+public sealed class CardHttpClient : ICardHttpClient, IDisposable
 {
-    private readonly HttpClient _client = _clientFactory.CreateClient(ClientNames.ApiClientName);
+    private readonly HttpClient _apiClient;
+    private readonly HttpClient _authClient;
 
-    private static async Task<string> GetToken()
+    public CardHttpClient(IHttpClientFactory clientFactory, IOptions<SettingsOptions> _settingsOptions)
     {
-        using var client = new HttpClient();
-        client.BaseAddress = new Uri("http://localhost:5091");
+        var deserializer = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .Build();
 
+        var settings = deserializer.Deserialize<SettingsData>(File.ReadAllText(_settingsOptions.Value.SettingsPath));
+
+        _apiClient = clientFactory.CreateClient(ClientNames.GetApiClientName(settings.ShouldUseVpn));
+        _authClient = clientFactory.CreateClient(ClientNames.GetAuthClientName(settings.ShouldUseVpn));
+    }
+
+    private async Task<string> GetToken()
+    {
         using var request = new HttpRequestMessage(HttpMethod.Post, ApiPaths.TokenApiPath);
-        request.Content = new StringContent(JsonSerializer.Serialize(new { Username = "test", Password = "test" }), Encoding.UTF8, "application/json");
+        request.Content = new StringContent(JsonSerializer.Serialize(new { Username = "Spaghet", Password = "82634239" }), Encoding.UTF8, "application/json");
 
-        var response = await client.SendAsync(request);
+        var response = await _authClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
 
         return (await response.Content.ReadFromJsonAsync<TokenResponse>())!.AccessToken;
     }
 
-    public async Task<List<Card>> GetAllCards()
+    public async Task<List<Card>> GetAllCards(string? filter, int currentPage, int pageSize)
     {
         string token = await GetToken();
-        using var request = new HttpRequestMessage(HttpMethod.Get, $"{ApiPaths.CardsApiPath}/all");
+        
+        var query = new Dictionary<string, string?>
+        {
+            ["filter"] = filter,
+            ["skip"] = (currentPage * pageSize).ToString(),
+            ["take"] = pageSize.ToString(),
+        };
+
+        string uri = QueryHelpers.AddQueryString($"{ApiPaths.CardsApiPath}/all", query);
+        using var request = new HttpRequestMessage(HttpMethod.Get, uri);
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.SendAsync(request);
+        var response = await _apiClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
 
         return await response.Content.ReadFromJsonAsync<List<Card>>() ?? [];
@@ -80,7 +105,7 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.SendAsync(request);
+        var response = await _apiClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
 
         return await response.Content.ReadFromJsonAsync<List<Card>>() ?? [];
@@ -90,11 +115,11 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
     {
         string token = await GetToken();
         using var request = new HttpRequestMessage(HttpMethod.Post, ApiPaths.CardsApiPath);
-        request.Content = new StringContent(JsonSerializer.Serialize(card), Encoding.UTF8, "application/json");
+        request.Content = new StringContent(JsonSerializer.Serialize(card.ToRequest()), Encoding.UTF8, "application/json");
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.SendAsync(request);
+        var response = await _apiClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
 
         return Int32.TryParse(response.Headers.Location?.OriginalString.Split('/')[^1], out int id)
@@ -106,11 +131,11 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
     {
         string token = await GetToken();
         using var request = new HttpRequestMessage(HttpMethod.Put, ApiPaths.CardsApiPath);
-        request.Content = new StringContent(JsonSerializer.Serialize(card), Encoding.UTF8, "application/json");
+        request.Content = new StringContent(JsonSerializer.Serialize(card.ToRequest()), Encoding.UTF8, "application/json");
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.SendAsync(request);
+        var response = await _apiClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
     }
 
@@ -122,7 +147,7 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.SendAsync(request);
+        var response = await _apiClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
     }
 
@@ -134,7 +159,7 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.SendAsync(request);
+        var response = await _apiClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
     }
 
@@ -145,7 +170,7 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.SendAsync(request);
+        var response = await _apiClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
     }
 
@@ -171,7 +196,7 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
         string token = await GetToken();
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.SendAsync(request);
+        var response = await _apiClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
 
         var imageResponse = await response.Content.ReadFromJsonAsync<ImageResponse>();
@@ -186,12 +211,12 @@ public sealed class CardHttpClient(IHttpClientFactory _clientFactory) : ICardHtt
         string token = await GetToken();
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.SendAsync(request);
+        var response = await _apiClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
     }
 
     public void Dispose()
     {
-        _client.Dispose();
+        _apiClient.Dispose();
     }
 }

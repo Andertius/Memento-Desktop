@@ -4,10 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:Memento.Core.Interfaces.ViewModels;assembly=Memento.Core"
              xmlns:dd="clr-namespace:Memento.Avalonia.DesignTime"
+             Background="{DynamicResource PrimaryBackground}"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              d:DataContext="{x:Static dd:DesignData.SettingsViewModel}"
              x:Class="Memento.Avalonia.Views.SettingsView"
              x:DataType="vm:ISettingsViewModel">
 
-    <TextBlock Text="{Binding Test}" />
+    <Border Padding="25">
+        <Grid RowDefinitions="Auto *">
+            <CheckBox IsChecked="{Binding ShouldUseVpn}" Content="VPN" />
+        </Grid>
+    </Border>
 </UserControl>

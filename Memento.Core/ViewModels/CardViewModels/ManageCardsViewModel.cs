@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Memento.Core.Data;
 using Memento.Core.Factories;
@@ -12,20 +14,23 @@ using Memento.Core.ViewModels.CategoryViewModels;
 using Memento.Core.ViewModels.DialogViewModels;
 using Memento.Core.ViewModels.TagViewModels;
 using Microsoft.Extensions.Options;
+using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 
 namespace Memento.Core.ViewModels.CardViewModels;
 
-public partial class ManageCardsViewModel(
-    ICardHttpClient _cardClient,
-    ICategoryHttpClient _categoryClient,
-    ITagHttpClient _tagClient,
-    ICardViewModelFactory _cardViewModelFactory,
-    IDialogService _dialogService,
-    IOptions<ApiClientOptions> options)
-    : PageViewModel(ApplicationPageNames.ManageCards), IManageCardsViewModel
+public partial class ManageCardsViewModel : PageViewModel, IManageCardsViewModel
 {
-    private readonly ApiClientOptions _options = options.Value;
+    private readonly ICardHttpClient _cardClient;
+    private readonly ICategoryHttpClient _categoryClient;
+    private readonly ITagHttpClient _tagClient;
+    private readonly ICardViewModelFactory _cardViewModelFactory;
+    private readonly IDialogService _dialogService;
+    private readonly ApiClientOptions _options;
+
+    private readonly int _pageSize = 20;
+    private int _currentPage;
+    private bool _endReached;
 
     [Reactive]
     private ObservableCollection<CardViewModel> _cards = [];
@@ -39,14 +44,36 @@ public partial class ManageCardsViewModel(
     [Reactive]
     private DialogViewModelBase? _dialogViewModel;
 
+    [Reactive]
+    private string? _filter;
+
+    public ManageCardsViewModel(
+        ICardHttpClient cardClient,
+        ICategoryHttpClient categoryClient,
+        ITagHttpClient tagClient,
+        ICardViewModelFactory cardViewModelFactory,
+        IDialogService dialogService,
+        IOptions<ApiClientOptions> options)
+        : base(ApplicationPageNames.ManageCards)
+    {
+        _cardClient = cardClient;
+        _categoryClient = categoryClient;
+        _tagClient = tagClient;
+        _cardViewModelFactory = cardViewModelFactory;
+        _dialogService = dialogService;
+        _options = options.Value;
+
+        this.WhenAnyValue(x => x.Filter).Throttle(TimeSpan.FromMilliseconds(400)).SelectMany(x => LoadFilteredCardsCommand.Execute(x)).Subscribe();
+    }
+
     public override async Task OnPageSelected()
     {
-        var cards = await _cardClient.GetAllCards();
-        var categories = await _categoryClient.GetCategories();
+        await LoadFilteredCards(null);
+
+        var categories = await _categoryClient.GetAllCategories(null, null, null);
         var tags = await _tagClient.GetTags();
 
-        Cards = new ObservableCollection<CardViewModel>(cards.Select(x => CardViewModel.FromDataModel(x, ImageHelper.GenerateCardImageUrl(x.Image, _options.Host))));
-        Categories = categories.Select(x => CategoryViewModel.FromDataModel(x, ImageHelper.GenerateCategoryImageUrl(x.Image, _options.Host))).ToList();
+        Categories = categories.Select(x => CategoryViewModel.FromDataModel(x, ImageHelper.GenerateCategoryImageUrl(x.Image, _options.LocalApiHost))).ToList();
         Tags = tags.Select(TagViewModel.FromDataModel).ToList();
     }
 
@@ -85,6 +112,39 @@ public partial class ManageCardsViewModel(
         if (index != -1)
         {
             Cards[index] = viewModel.Card;
+        }
+    }
+
+    [ReactiveCommand]
+    public async Task LoadFilteredCards(string? filter)
+    {
+        _currentPage = 0;
+        var cards = await _cardClient.GetAllCards(filter, _currentPage, _pageSize);
+
+        Cards = new ObservableCollection<CardViewModel>(cards.Select(x => CardViewModel.FromDataModel(x, ImageHelper.GenerateCardImageUrl(x.Image, _options.LocalApiHost))));
+    }
+
+    [ReactiveCommand]
+    public async Task LoadNextCards()
+    {
+        if (_endReached)
+        {
+            return;
+        }
+        
+        _currentPage++;
+
+        var cards = await _cardClient.GetAllCards(Filter, _currentPage, _pageSize);
+
+        if (cards.Count == 0)
+        {
+            _endReached = true;
+            return;
+        }
+
+        foreach (var card in cards)
+        {
+            Cards.Add(CardViewModel.FromDataModel(card, ImageHelper.GenerateCardImageUrl(card.Image, _options.LocalApiHost)));
         }
     }
 }

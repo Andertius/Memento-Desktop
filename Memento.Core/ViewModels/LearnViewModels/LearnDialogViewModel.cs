@@ -39,7 +39,7 @@ public partial class LearnDialogViewModel : DialogViewModelBase, ILearnDialogVie
         _currentCard = cards[0];
 
         this.WhenAnyValue(x => x.CurrentCard)
-            .Subscribe(card => ImageUrl = ImageHelper.GenerateCardImageUrl(card.Image, options.Host));
+            .Subscribe(card => ImageUrl = ImageHelper.GenerateCardImageUrl(card.Image, options.LocalApiHost));
     }
 
     [ReactiveCommand]
@@ -70,4 +70,8 @@ public partial class LearnDialogViewModel : DialogViewModelBase, ILearnDialogVie
     [ReactiveCommand]
     public void FlipCard()
         => FaceDown = true;
+
+    [ReactiveCommand]
+    public void Exit()
+        => Close();
 }

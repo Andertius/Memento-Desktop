@@ -20,4 +20,6 @@ public interface ILearnDialogViewModel
     ReactiveCommand<Unit, Unit> ShowHintCommand { get; }
 
     ReactiveCommand<Unit, Unit> FlipCardCommand { get; }
+
+    ReactiveCommand<Unit, Unit> ExitCommand { get; }
 }

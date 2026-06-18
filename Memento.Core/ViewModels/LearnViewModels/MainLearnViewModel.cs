@@ -77,7 +77,7 @@ public partial class MainLearnViewModel : PageViewModel, IMainLearnViewModel, ID
 
     public override async Task OnPageSelected()
     {
-        Categories = await _categoryHttpClient.GetCategories();
+        Categories = await _categoryHttpClient.GetAllCategories(null, null, null);
         Tags = await _tagHttpClient.GetTags();
     }
 
@@ -93,7 +93,7 @@ public partial class MainLearnViewModel : PageViewModel, IMainLearnViewModel, ID
             cardsEnumerable = cardsEnumerable.Where(x => x.Tags.IntersectBy(SelectedTags.Select(x => x.Id), x => x.Id).Any());
         }
 
-        Cards = cardsEnumerable.ToArray();
+        Cards = cardsEnumerable.Shuffle().ToArray();
 
         if (Cards.Count == 0)
         {

@@ -80,7 +80,7 @@ public partial class CreateCardViewModel : DialogViewModelBase, ICreateCardViewM
         if (Card.UploadedImageData is not null)
         {
             string? fileName = await _client.UploadImage(id, Card.UploadedImageData);
-            Card.ImageUrl = new Uri($"{_options.Host}/{ApiPaths.CardsImagesPath}/{fileName}");
+            Card.ImageUrl = new Uri($"{_options.LocalApiHost}/{ApiPaths.CardsImagesPath}/{fileName}");
             Card.UploadedImageData = null;
         }
 

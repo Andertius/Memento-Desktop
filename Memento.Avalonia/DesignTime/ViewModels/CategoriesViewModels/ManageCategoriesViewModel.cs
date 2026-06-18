@@ -31,7 +31,13 @@ public sealed class ManageCategoriesViewModel : ViewModelBase, IManageCategories
 
     public IReadOnlyCollection<TagViewModel> Tags { get; set; } = [];
 
+    public string? Filter { get; set; }
+
     public ReactiveCommand<Unit, Unit> CreateCategoryCommand { get; } = ReactiveCommand.CreateFromTask<Unit, Unit>(_ => Task.FromResult(Unit.Default));
 
     public ReactiveCommand<CategoryViewModel, Unit> EditCategoryCommand { get; } = ReactiveCommand.CreateFromTask<CategoryViewModel, Unit>(_ => Task.FromResult(Unit.Default));
+
+    public ReactiveCommand<string?, Unit> LoadFilteredCategoriesCommand { get; } = ReactiveCommand.CreateFromTask<string?, Unit>(_ => Task.FromResult(Unit.Default));
+
+    public ReactiveCommand<Unit, Unit> LoadNextCategoriesCommand { get; } = ReactiveCommand.CreateFromTask<Unit, Unit>(_ => Task.FromResult(Unit.Default));
 }

@@ -5,5 +5,5 @@ namespace Memento.Avalonia.DesignTime.ViewModels;
 
 public sealed class SettingsViewModel() : PageViewModel(ApplicationPageNames.Settings), ISettingsViewModel
 {
-    public string Test { get; set; } = "Settings view";
+    public bool ShouldUseVpn { get; set; }
 }

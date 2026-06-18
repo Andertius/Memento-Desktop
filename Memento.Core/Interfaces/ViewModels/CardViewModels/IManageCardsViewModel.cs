@@ -15,8 +15,14 @@ public interface IManageCardsViewModel : IViewModelBase, IDialogProvider
     IReadOnlyCollection<CategoryViewModel> Categories { get; set; }
 
     IReadOnlyCollection<TagViewModel> Tags { get; set; }
-    
+
+    string? Filter { get; set; }
+
     ReactiveCommand<Unit, Unit> CreateCardCommand { get; }
-    
+
     ReactiveCommand<CardViewModel, Unit> EditCardCommand { get; }
+
+    ReactiveCommand<string?, Unit> LoadFilteredCardsCommand { get; }
+
+    ReactiveCommand<Unit, Unit> LoadNextCardsCommand { get; }
 }

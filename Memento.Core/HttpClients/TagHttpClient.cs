@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -8,7 +9,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Memento.Core.Data;
 using Memento.Core.DataModels;
+using Memento.Core.Options;
 using Memento.Core.Responses;
+using Microsoft.Extensions.Options;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace Memento.Core.HttpClients;
 
@@ -23,19 +28,29 @@ public interface ITagHttpClient
     Task DeleteTag(int tagId);
 }
 
-public sealed class TagHttpClient(IHttpClientFactory _clientFactory) : ITagHttpClient, IDisposable
+public sealed class TagHttpClient : ITagHttpClient, IDisposable
 {
-    private readonly HttpClient _client = _clientFactory.CreateClient(ClientNames.ApiClientName);
+    private readonly HttpClient _apiClient;
+    private readonly HttpClient _authClient;
 
-    private static async Task<string> GetToken()
+    public TagHttpClient(IHttpClientFactory clientFactory, IOptions<SettingsOptions> _settingsOptions)
     {
-        using var client = new HttpClient();
-        client.BaseAddress = new Uri("http://localhost:5091");
+        var deserializer = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .Build();
 
+        var settings = deserializer.Deserialize<SettingsData>(File.ReadAllText(_settingsOptions.Value.SettingsPath));
+
+        _apiClient = clientFactory.CreateClient(ClientNames.GetApiClientName(settings.ShouldUseVpn));
+        _authClient = clientFactory.CreateClient(ClientNames.GetAuthClientName(settings.ShouldUseVpn));
+    }
+
+    private async Task<string> GetToken()
+    {
         using var request = new HttpRequestMessage(HttpMethod.Post, ApiPaths.TokenApiPath);
-        request.Content = new StringContent(JsonSerializer.Serialize(new { Username = "test", Password = "test" }), Encoding.UTF8, "application/json");
+        request.Content = new StringContent(JsonSerializer.Serialize(new { Username = "Spaghet", Password = "82634239" }), Encoding.UTF8, "application/json");
 
-        var response = await client.SendAsync(request);
+        var response = await _authClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
 
         return (await response.Content.ReadFromJsonAsync<TokenResponse>())!.AccessToken;
@@ -48,7 +63,7 @@ public sealed class TagHttpClient(IHttpClientFactory _clientFactory) : ITagHttpC
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.SendAsync(request);
+        var response = await _apiClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
 
         return await response.Content.ReadFromJsonAsync<List<Tag>>() ?? [];
@@ -62,7 +77,7 @@ public sealed class TagHttpClient(IHttpClientFactory _clientFactory) : ITagHttpC
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.SendAsync(request);
+        var response = await _apiClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
 
         return Int32.TryParse(response.Headers.Location?.OriginalString.Split('/')[^1], out int id)
@@ -78,7 +93,7 @@ public sealed class TagHttpClient(IHttpClientFactory _clientFactory) : ITagHttpC
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.SendAsync(request);
+        var response = await _apiClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
     }
 
@@ -89,12 +104,12 @@ public sealed class TagHttpClient(IHttpClientFactory _clientFactory) : ITagHttpC
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _client.SendAsync(request);
+        var response = await _apiClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
     }
 
     public void Dispose()
     {
-        _client.Dispose();
+        _apiClient.Dispose();
     }
 }

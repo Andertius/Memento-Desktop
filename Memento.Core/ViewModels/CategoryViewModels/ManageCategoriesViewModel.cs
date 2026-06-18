@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Memento.Core.Data;
 using Memento.Core.Factories;
@@ -11,18 +13,23 @@ using Memento.Core.Services;
 using Memento.Core.ViewModels.DialogViewModels;
 using Memento.Core.ViewModels.TagViewModels;
 using Microsoft.Extensions.Options;
+using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 
 namespace Memento.Core.ViewModels.CategoryViewModels;
 
-public partial class ManageCategoriesViewModel(
-    ICategoryHttpClient _categoryClient,
-    ITagHttpClient _tagClient,
-    ICategoryViewModelFactory _categoryViewModelFactory,
-    IDialogService _dialogService,
-    IOptions<ApiClientOptions> options)
-    : PageViewModel(ApplicationPageNames.ManageCategories), IManageCategoriesViewModel
+public partial class ManageCategoriesViewModel : PageViewModel, IManageCategoriesViewModel
 {
+    private readonly ICategoryHttpClient _categoryClient;
+    private readonly ITagHttpClient _tagClient;
+    private readonly ICategoryViewModelFactory _categoryViewModelFactory;
+    private readonly IDialogService _dialogService;
+    private readonly ApiClientOptions _options;
+
+    private readonly int _pageSize = 20;
+    private int _currentPage;
+    private bool _endReached;
+
     [Reactive]
     private ObservableCollection<CategoryViewModel> _categories = [];
     
@@ -32,14 +39,31 @@ public partial class ManageCategoriesViewModel(
     [Reactive]
     private DialogViewModelBase? _dialogViewModel;
 
-    private readonly ApiClientOptions _options = options.Value;
+    [Reactive]
+    private string? _filter;
+
+    public ManageCategoriesViewModel(
+        ICategoryHttpClient categoryClient,
+        ITagHttpClient tagClient,
+        ICategoryViewModelFactory categoryViewModelFactory,
+        IDialogService dialogService,
+        IOptions<ApiClientOptions> options)
+        : base(ApplicationPageNames.ManageCategories)
+    {
+        _categoryClient = categoryClient;
+        _tagClient = tagClient;
+        _categoryViewModelFactory = categoryViewModelFactory;
+        _dialogService = dialogService;
+        _options = options.Value;
+
+        this.WhenAnyValue(x => x.Filter).Throttle(TimeSpan.FromMilliseconds(400)).SelectMany(x => LoadFilteredCategoriesCommand.Execute(x)).Subscribe();
+    }
 
     public override async Task OnPageSelected()
     {
-        var categories = await _categoryClient.GetCategories();
-        var tags = await _tagClient.GetTags();
+        await LoadFilteredCategories(null);
 
-        Categories = new ObservableCollection<CategoryViewModel>(categories.Select(x => CategoryViewModel.FromDataModel(x, ImageHelper.GenerateCategoryImageUrl(x.Image, _options.Host))));
+        var tags = await _tagClient.GetTags();
         Tags = tags.Select(TagViewModel.FromDataModel).ToList();
     }
 
@@ -78,6 +102,39 @@ public partial class ManageCategoriesViewModel(
         if (index != -1)
         {
             Categories[index] = viewModel.Category;
+        }
+    }
+
+    [ReactiveCommand]
+    public async Task LoadFilteredCategories(string? filter)
+    {
+        _currentPage = 0;
+        var cards = await _categoryClient.GetAllCategories(filter, _currentPage, _pageSize);
+
+        Categories = new ObservableCollection<CategoryViewModel>(cards.Select(x => CategoryViewModel.FromDataModel(x, ImageHelper.GenerateCategoryImageUrl(x.Image, _options.LocalApiHost))));
+    }
+
+    [ReactiveCommand]
+    public async Task LoadNextCategories()
+    {
+        if (_endReached)
+        {
+            return;
+        }
+
+        _currentPage++;
+
+        var categories = await _categoryClient.GetAllCategories(Filter, _currentPage, _pageSize);
+
+        if (categories.Count == 0)
+        {
+            _endReached = true;
+            return;
+        }
+
+        foreach (var card in categories)
+        {
+            Categories.Add(CategoryViewModel.FromDataModel(card, ImageHelper.GenerateCategoryImageUrl(card.Image, _options.LocalApiHost)));
         }
     }
 }

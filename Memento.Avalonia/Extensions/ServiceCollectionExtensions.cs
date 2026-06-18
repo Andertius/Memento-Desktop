@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using Memento.Avalonia.Constants;
+using Memento.Avalonia.Helpers;
 using Memento.Core.Data;
 using Memento.Core.Factories;
 using Memento.Core.HttpClients;
@@ -79,6 +82,7 @@ public static class ServiceCollectionExtensions
         public IServiceCollection AddOptions(IConfiguration configuration)
         {
             services.Configure<ApiClientOptions>(configuration.GetSection(nameof(ApiClientOptions)));
+            services.Configure<SettingsOptions>(options => options.SettingsPath = Path.Combine(ConfigDirectoryHelper.GetAppSettingsDirectory(), ConfigNames.SettingsFile));
 
             return services;
         }
@@ -92,10 +96,28 @@ public static class ServiceCollectionExtensions
 
         public IServiceCollection AddClients()
         {
-            services.AddHttpClient(ClientNames.ApiClientName, (sp, client) =>
+            services.AddHttpClient(ClientNames.LocalApiClientName, (sp, client) =>
             {
                 var options = sp.GetRequiredService<IOptions<ApiClientOptions>>();
-                client.BaseAddress = new Uri($"{options.Value.Host}");
+                client.BaseAddress = new Uri($"{options.Value.LocalApiHost}");
+            });
+
+            services.AddHttpClient(ClientNames.VpnApiClientName, (sp, client) =>
+            {
+                var options = sp.GetRequiredService<IOptions<ApiClientOptions>>();
+                client.BaseAddress = new Uri($"{options.Value.VpnApiHost}");
+            });
+
+            services.AddHttpClient(ClientNames.LocalAuthClientName, (sp, client) =>
+            {
+                var options = sp.GetRequiredService<IOptions<ApiClientOptions>>();
+                client.BaseAddress = new Uri($"{options.Value.LocalAuthHost}");
+            });
+
+            services.AddHttpClient(ClientNames.VpnAuthClientName, (sp, client) =>
+            {
+                var options = sp.GetRequiredService<IOptions<ApiClientOptions>>();
+                client.BaseAddress = new Uri($"{options.Value.VpnAuthHost}");
             });
 
             services.AddTransient<ICardHttpClient, CardHttpClient>();

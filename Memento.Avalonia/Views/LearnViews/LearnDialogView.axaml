@@ -46,18 +46,20 @@
 
                 <Separator Height="NaN" Width="1" />
 
-                <StackPanel Spacing="15" VerticalAlignment="Center">
+                <StackPanel Spacing="15" VerticalAlignment="Center" MaxWidth="300">
                     <TextBlock Text="Translation:" Margin="20 00" />
-                    <TextBlock Text="{Binding CurrentCard.Translation}" Margin="20 00" />
+                    <TextBlock Text="{Binding CurrentCard.Translation}" Margin="20 00" TextWrapping="Wrap" FontSize="32" />
                     <Separator Width="250" />
                     <TextBlock Text="Definition:" Margin="20 00" />
-                    <TextBlock Text="{Binding CurrentCard.Definition}" Margin="20 00" />
+                    <TextBlock Text="{Binding CurrentCard.Definition}" Margin="20 00" TextWrapping="Wrap" />
                 </StackPanel>
             </StackPanel>
 
+            <Button Grid.Row="3" HorizontalAlignment="Left" Content="Exit" Command="{Binding ExitCommand}" />
+
             <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="15" HorizontalAlignment="Right">
-                <Button Content="I know it!" Command="{Binding FlipCardCommand}" IsVisible="{Binding !FaceDown}" />
                 <Button Content="Can't remember" Command="{Binding FlipCardCommand}" IsVisible="{Binding !FaceDown}" />
+                <Button Content="I know it!" Command="{Binding FlipCardCommand}" IsVisible="{Binding !FaceDown}" />
                 <Button Content="Next card" Command="{Binding MoveNextCommand}" IsVisible="{Binding FaceDown}" />
             </StackPanel>
         </Grid>

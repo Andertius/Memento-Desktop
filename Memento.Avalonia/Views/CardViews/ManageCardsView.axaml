@@ -41,7 +41,7 @@
                     </StackPanel>
                 </StackPanel>
 
-                <ScrollViewer Grid.Row="1">
+                <ScrollViewer Grid.Row="1" x:Name="Scroll">
                     <ItemsControl ItemsSource="{Binding Cards}"
                                   Background="Transparent">
                         <ItemsControl.ItemsPanel>
