@@ -27,7 +27,7 @@
                 <StackPanel Grid.Row="0">
                     <TextBlock Text="Category Management" FontSize="26" HorizontalAlignment="Center" />
 
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Spacing="25">
                         <Button HorizontalAlignment="Left" Classes="add-item-button" Command="{Binding CreateCategoryCommand}">
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <materialIcons:MaterialIcon Kind="Plus" />
@@ -36,7 +36,7 @@
                             </StackPanel>
                         </Button>
 
-                        <!-- <TextBox HorizontalAlignment="Right" /> -->
+                        <TextBox HorizontalAlignment="Right" Watermark="Search..." Text="{Binding Filter}" Width="250" />
                     </StackPanel>
                 </StackPanel>
 
