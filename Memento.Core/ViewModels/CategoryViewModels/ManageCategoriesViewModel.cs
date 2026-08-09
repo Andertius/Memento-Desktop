@@ -108,10 +108,11 @@ public partial class ManageCategoriesViewModel : PageViewModel, IManageCategorie
     [ReactiveCommand]
     public async Task LoadFilteredCategories(string? filter)
     {
+        _endReached = false;
         _currentPage = 0;
         var cards = await _categoryClient.GetAllCategories(filter, _currentPage, _pageSize);
 
-        Categories = new ObservableCollection<CategoryViewModel>(cards.Select(x => CategoryViewModel.FromDataModel(x, ImageHelper.GenerateCategoryImageUrl(x.Image, _options.LocalApiHost))));
+        Categories = new ObservableCollection<CategoryViewModel>(cards.Select(x => CategoryViewModel.FromDataModel(x, ImageHelper.GenerateCategoryImageUrl(x.Image, _options.VpnApiHost))));
     }
 
     [ReactiveCommand]
@@ -134,7 +135,7 @@ public partial class ManageCategoriesViewModel : PageViewModel, IManageCategorie
 
         foreach (var card in categories)
         {
-            Categories.Add(CategoryViewModel.FromDataModel(card, ImageHelper.GenerateCategoryImageUrl(card.Image, _options.LocalApiHost)));
+            Categories.Add(CategoryViewModel.FromDataModel(card, ImageHelper.GenerateCategoryImageUrl(card.Image, _options.VpnApiHost)));
         }
     }
 }

@@ -99,25 +99,25 @@ public static class ServiceCollectionExtensions
             services.AddHttpClient(ClientNames.LocalApiClientName, (sp, client) =>
             {
                 var options = sp.GetRequiredService<IOptions<ApiClientOptions>>();
-                client.BaseAddress = new Uri($"{options.Value.LocalApiHost}");
+                client.BaseAddress = new Uri(options.Value.LocalApiHost);
             });
 
             services.AddHttpClient(ClientNames.VpnApiClientName, (sp, client) =>
             {
                 var options = sp.GetRequiredService<IOptions<ApiClientOptions>>();
-                client.BaseAddress = new Uri($"{options.Value.VpnApiHost}");
+                client.BaseAddress = new Uri(options.Value.VpnApiHost);
             });
 
             services.AddHttpClient(ClientNames.LocalAuthClientName, (sp, client) =>
             {
                 var options = sp.GetRequiredService<IOptions<ApiClientOptions>>();
-                client.BaseAddress = new Uri($"{options.Value.LocalAuthHost}");
+                client.BaseAddress = new Uri(options.Value.LocalAuthHost);
             });
 
             services.AddHttpClient(ClientNames.VpnAuthClientName, (sp, client) =>
             {
                 var options = sp.GetRequiredService<IOptions<ApiClientOptions>>();
-                client.BaseAddress = new Uri($"{options.Value.VpnAuthHost}");
+                client.BaseAddress = new Uri(options.Value.VpnAuthHost);
             });
 
             services.AddTransient<ICardHttpClient, CardHttpClient>();

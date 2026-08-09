@@ -23,7 +23,7 @@ namespace Memento.Core.HttpClients;
 
 public interface ICardHttpClient
 {
-    Task<List<Card>> GetAllCards(string? filter, int currentPage, int pageSize);
+    Task<List<Card>> GetAllCards(string? filter, int? currentPage, int? pageSize);
 
     Task<List<Card>> GetCards(int? categoryId = null, IReadOnlyCollection<int>? tagIds = null);
 
@@ -70,15 +70,15 @@ public sealed class CardHttpClient : ICardHttpClient, IDisposable
         return (await response.Content.ReadFromJsonAsync<TokenResponse>())!.AccessToken;
     }
 
-    public async Task<List<Card>> GetAllCards(string? filter, int currentPage, int pageSize)
+    public async Task<List<Card>> GetAllCards(string? filter, int? currentPage, int? pageSize)
     {
         string token = await GetToken();
         
         var query = new Dictionary<string, string?>
         {
             ["filter"] = filter,
-            ["skip"] = (currentPage * pageSize).ToString(),
-            ["take"] = pageSize.ToString(),
+            ["skip"] = currentPage.HasValue && pageSize.HasValue ? (currentPage * pageSize).ToString() : null,
+            ["take"] = pageSize.HasValue ? pageSize.ToString() : null,
         };
 
         string uri = QueryHelpers.AddQueryString($"{ApiPaths.CardsApiPath}/all", query);

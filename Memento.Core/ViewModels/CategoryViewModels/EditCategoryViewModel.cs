@@ -87,7 +87,7 @@ public partial class EditCategoryViewModel : DialogViewModelBase, IEditCategoryV
         if (Category.UploadedImageData is not null)
         {
             string? fileName = await _client.UploadImage(Category.Id, Category.UploadedImageData);
-            Category.ImageUrl = new Uri($"{_options.LocalApiHost}/{ApiPaths.CategoriesImagesPath}/{fileName}");
+            Category.ImageUrl = new Uri($"{_options.VpnApiHost}/{ApiPaths.CategoriesImagesPath}/{fileName}");
             Category.UploadedImageData = null;
         }
         else if (Category.ImageUrl is null)

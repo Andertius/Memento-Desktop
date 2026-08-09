@@ -9,7 +9,7 @@
              xmlns:labs="clr-namespace:Avalonia.Labs.Controls;assembly=Avalonia.Labs.Controls"
              xmlns:converters="clr-namespace:Memento.Avalonia.Converters"
              xmlns:dd="clr-namespace:Memento.Avalonia.DesignTime"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
              Background="{DynamicResource PrimaryBackground}"
              d:DataContext="{x:Static dd:DesignData.ManageCategoriesViewModel}"
              x:Class="Memento.Avalonia.Views.CategoryViews.ManageCategoriesView"
@@ -57,7 +57,8 @@
                                         Padding="4"
                                         Width="300"
                                         Command="{Binding ElementName=CategoryList, Path=DataContext.EditCategoryCommand, FallbackValue={x:Null}}"
-                                        CommandParameter="{Binding}">
+                                        CommandParameter="{Binding}"
+                                        VerticalAlignment="Top">
                                     <StackPanel>
                                         <Panel Height="275" Width="275">
                                             <Rectangle Fill="{DynamicResource ImageBackdrop}" />
@@ -70,6 +71,10 @@
                                         </Panel>
 
                                         <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" FontSize="22" />
+
+                                        <Separator />
+
+                                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="10 0" />
 
                                         <Separator />
 

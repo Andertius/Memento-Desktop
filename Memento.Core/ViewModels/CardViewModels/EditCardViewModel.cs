@@ -93,7 +93,7 @@ public partial class EditCardViewModel : DialogViewModelBase, IEditCardViewModel
         if (Card.UploadedImageData is not null)
         {
             string? fileName = await _client.UploadImage(Card.Id, Card.UploadedImageData);
-            Card.ImageUrl = new Uri($"{_options.LocalApiHost}/{ApiPaths.CardsImagesPath}/{fileName}");
+            Card.ImageUrl = new Uri($"{_options.VpnApiHost}/{ApiPaths.CardsImagesPath}/{fileName}");
             Card.UploadedImageData = null;
         }
         else if (Card.ImageUrl is null)

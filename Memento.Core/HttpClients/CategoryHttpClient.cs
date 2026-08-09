@@ -71,8 +71,8 @@ public sealed class CategoryHttpClient : ICategoryHttpClient, IDisposable
         var query = new Dictionary<string, string?>
         {
             ["filter"] = filter,
-            ["skip"] = (currentPage * pageSize).ToString(),
-            ["take"] = pageSize.ToString(),
+            ["skip"] = currentPage.HasValue && pageSize.HasValue ? (currentPage * pageSize).ToString() : null,
+            ["take"] = pageSize.HasValue ? pageSize.ToString() : null,
         };
 
         string uri = QueryHelpers.AddQueryString(ApiPaths.CategoriesApiPath, query);

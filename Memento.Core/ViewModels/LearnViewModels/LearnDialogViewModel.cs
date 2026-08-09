@@ -39,7 +39,7 @@ public partial class LearnDialogViewModel : DialogViewModelBase, ILearnDialogVie
         _currentCard = cards[0];
 
         this.WhenAnyValue(x => x.CurrentCard)
-            .Subscribe(card => ImageUrl = ImageHelper.GenerateCardImageUrl(card.Image, options.LocalApiHost));
+            .Subscribe(card => ImageUrl = ImageHelper.GenerateCardImageUrl(card.Image, options.VpnApiHost));
     }
 
     [ReactiveCommand]

@@ -21,11 +21,13 @@ public sealed class ManageCategoriesViewModel : ViewModelBase, IManageCategories
         new()
         {
             Name = "Name 1",
+            Description = "A very very very very very very very long description",
             Tags = [new Tag { Name = "Tag" }],
         },
         new()
         {
             Name = "Name 2",
+            Description = "Description",
         },
     ];
 

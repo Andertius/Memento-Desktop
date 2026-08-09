@@ -73,7 +73,7 @@ public partial class ManageCardsViewModel : PageViewModel, IManageCardsViewModel
         var categories = await _categoryClient.GetAllCategories(null, null, null);
         var tags = await _tagClient.GetTags();
 
-        Categories = categories.Select(x => CategoryViewModel.FromDataModel(x, ImageHelper.GenerateCategoryImageUrl(x.Image, _options.LocalApiHost))).ToList();
+        Categories = categories.Select(x => CategoryViewModel.FromDataModel(x, ImageHelper.GenerateCategoryImageUrl(x.Image, _options.VpnApiHost))).ToList();
         Tags = tags.Select(TagViewModel.FromDataModel).ToList();
     }
 
@@ -118,10 +118,11 @@ public partial class ManageCardsViewModel : PageViewModel, IManageCardsViewModel
     [ReactiveCommand]
     public async Task LoadFilteredCards(string? filter)
     {
+        _endReached = false;
         _currentPage = 0;
         var cards = await _cardClient.GetAllCards(filter, _currentPage, _pageSize);
 
-        Cards = new ObservableCollection<CardViewModel>(cards.Select(x => CardViewModel.FromDataModel(x, ImageHelper.GenerateCardImageUrl(x.Image, _options.LocalApiHost))));
+        Cards = new ObservableCollection<CardViewModel>(cards.Select(x => CardViewModel.FromDataModel(x, ImageHelper.GenerateCardImageUrl(x.Image, _options.VpnApiHost))));
     }
 
     [ReactiveCommand]
@@ -144,7 +145,7 @@ public partial class ManageCardsViewModel : PageViewModel, IManageCardsViewModel
 
         foreach (var card in cards)
         {
-            Cards.Add(CardViewModel.FromDataModel(card, ImageHelper.GenerateCardImageUrl(card.Image, _options.LocalApiHost)));
+            Cards.Add(CardViewModel.FromDataModel(card, ImageHelper.GenerateCardImageUrl(card.Image, _options.VpnApiHost)));
         }
     }
 }
